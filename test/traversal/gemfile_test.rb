@@ -38,7 +38,7 @@ class TraversalTest < Test::Unit::TestCase
     code.inside_block('group', :args => [:test]) do |b|
       call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}])
       assert_equal Ruby::Call, call_node.class
-      # puts call_node.to_ruby
+      puts call_node.to_ruby
     end
   end
   
@@ -55,11 +55,11 @@ class TraversalTest < Test::Unit::TestCase
   
     }
     code = Ripper::RubyBuilder.build(src)               
-    def_node = code.find_def('hello_world', :params => ['a'])
-    # puts def_node.to_ruby
+    # def_node = code.find_def('hello_world', :params => ['a'])
     code.inside_def('hello_world', :params => ['a']) do |b|
       call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}])
-      # puts call_node.to_ruby
+      assert_equal Ruby::Call, call_node.class
+      puts call_node.to_ruby
     end
   end 
 
