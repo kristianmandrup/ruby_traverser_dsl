@@ -23,8 +23,7 @@ module RubyAPI
 
     def find_call(name, options = {})
       options.merge!(:identifier => name)      
-      obj = get_obj(options)   
-      return obj.select(Ruby::Call, options).first
+      get_obj.select(Ruby::Call, options).first
     end 
 
     def find_block(name, options = {})  
