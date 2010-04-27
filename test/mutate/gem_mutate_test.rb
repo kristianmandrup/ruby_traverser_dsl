@@ -66,6 +66,27 @@ end
       puts b.to_ruby
     end       
   end  
+   
+  define_method :"test find assignment in method definition and replace value of right side" do                           
+    src = %q{    
+      def hello_world(a)
+        my_var = 2
+      end  
+    }    
+          
+    code = Ripper::RubyBuilder.build(src)               
+
+    code.inside_def('hello_world', :params => ['a']) do |b|
+      # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
+      call_node = b.find_assignment('my_var')
+      assert_equal Ruby::Assignment, call_node.class
+      
+      call_node.replace(:value => "3")      
+      puts b.to_ruby
+    end
+  end  
+ 
+
  
   
 end

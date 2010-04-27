@@ -80,16 +80,28 @@ module HashReplacer
   end
 end
 
+module ValueReplacer
+  def replace_value(options)
+    if self.class == Ruby::Assignment 
+      self.right.token = options[:value]
+    end
+  end 
+end
 
 module RubyAPI
   module Mutator
     module Replacer
       include PositionReplacer
       include TokenReplacer  
-      include HashReplacer        
+      include HashReplacer
+      include ValueReplacer              
       
       # :arg => 'ripper', :replace_arg => 'rapper'
       def replace(options)                       
+        if options[:value]
+          return replace_value(options) 
+        end
+        
         if position_arg?(options[:arg])
           return replace_position_arg(options) 
         end
