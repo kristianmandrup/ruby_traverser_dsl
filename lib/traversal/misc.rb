@@ -19,7 +19,7 @@ module Ruby
         
         def has_a_block?(with_block)
           with_block && self.respond_to?(:block)
-        end
+        end                                
 
         def get_args_list(obj)                         
           return obj.params if obj.respond_to? :params 

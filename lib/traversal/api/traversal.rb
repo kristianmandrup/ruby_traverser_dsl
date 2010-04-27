@@ -11,7 +11,6 @@ module RubyAPI
     # pp self if options[:verbose]      
     if self.class == Ruby::Method     
       obj = self.block 
-      puts "size: #{obj.size}"
       if obj.size == 1
         return obj[0] 
       else
