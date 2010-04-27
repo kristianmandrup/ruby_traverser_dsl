@@ -1,7 +1,8 @@
 module RubyAPI
   module Inside
     def inside_block(name, options = {}, &block) 
-      s = find_block(name, options) 
+      s = find_block(name, options)
+      s.extend(options[:extend]) if options[:extend] 
       block.arity < 1 ? s.instance_eval(&block) : block.call(s)
     end 
 
