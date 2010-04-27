@@ -1,21 +1,12 @@
 require 'mutate/replacer'
 
-require 'singleton'
-
-class RubyAPIConfig
-  include Singleton
-  
-  attr_accessor :inside_indent
-
-  def initialize
-    @inside_indent ||= 0    
+class String
+  # Returns an indented string, all lines of string will be indented with count of chars
+  def indent(char, count)
+    (char * count) + gsub(/(\n+)/) { $1 + (char * count) }
   end
-    
-  def inc_inside_indent
-    @inside_indent += 2
-  end
-  
 end
+
 
 module RubyAPI
   module Mutator
@@ -23,12 +14,17 @@ module RubyAPI
     
     def append_code(code)
       obj = object
-      indent = obj.last_indent  
-      puts "indent: #{indent}"
-      code =  "\n" + (' ' * indent) + code + "\n"
+      indentation = obj.last_indent  
+      code =  "\n#{code}\n".indent(' ', indentation)
       ruby_code = Ripper::RubyBuilder.build(code)
-      obj.get_elements << ruby_code.elements[0]
+      inject_code = ruby_code.elements[0]
+      obj.get_elements << inject_code
+      obj
     end
+
+    def append_comment(text)
+      append_code("# #{text}")
+    end      
 
     def get_elements
       case self
@@ -40,19 +36,6 @@ module RubyAPI
     end
 
 
-    # --- &id003 !ruby/object:Ruby::Arg 
-    # arg: &id001 !ruby/object:Ruby::String 
-    #   elements: !seq:Ruby::Node::Composite::Array 
-    #     - !ruby/object:Ruby::StringContent 
-    #       parent: *id001
-    #       position: !ruby/object:Ruby::Node::Position 
-    #         col: 7
-    #         row: 2
-    #       prolog: !ruby/object:Ruby::Prolog 
-    #         elements: !seq:Ruby::Node::Composite::Array []
-    # 
-    #       token: ripper
-    
     protected
 
     def last_indent
@@ -65,9 +48,10 @@ module RubyAPI
     end
 
     def last_position(elements) 
-      return elements.last.identifier.position.col if elements && elements.size > 0
-      puts "returning inside indent: #{inside_indent}"
-      RubyAPIConfig.instance.inside_indent
+      last_element = elements.last
+      return position.col if last_element.class == Ruby::Token 
+      return last_element.identifier.position.col if elements && elements.size > 0
+      inside_indent
     end
 
     def object
