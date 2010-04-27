@@ -8,14 +8,23 @@ module Ruby
           args_list = get_args_list(obj)
           return false if !args_list    
           args_list.elements.each do |arg|    
-            argument = retrieve_arg(arg) 
+            argument = retrieve_arg(arg)  
+            next if !valid_arg?(argument)
             value.each do |v|            
               v = v[:array] if v.respond_to?(:has_key?) && v[:array]              
               found += 1 if argument == v
             end
           end     
-          return found == value.size
+          return found == argument_count(value)
         end                             
+
+        def argument_count(args)
+          args.reject{|arg| !valid_arg?(arg)}.size
+        end
+        
+        def valid_arg?(arg)
+          arg && arg != {} 
+        end
         
         def has_a_block?(with_block)
           with_block && self.respond_to?(:block)

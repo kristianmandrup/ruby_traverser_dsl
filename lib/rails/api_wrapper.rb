@@ -9,7 +9,13 @@ module RubyAPI
         append_code("gem '#{name}'")
       end
 
-      def find_gem(name, options = {})
+      def replace_gem(name, replace_name)
+        found = find_gem(name)
+        puts "gem:#{found}"
+        found.replace(:arg => name, :replace_arg => replace_name) if found       
+      end
+
+      def find_gem(name, options = nil)
         find_call('gem', :args => ["#{name}", options])
       end
     end

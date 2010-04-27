@@ -17,10 +17,11 @@ end
     code = Ripper::RubyBuilder.build(src)                 
 
     code.extend(RubyAPI::Rails::Gemfile)
-    code.inside_group :test do |b|      
+    code.inside_group :test do |b|
       b.add_gem 'cucumber' if !b.find_gem 'cucumber'          
-      puts b.to_ruby
+      b.replace_gem 'blip', 'blap'
     end
+    puts code.to_ruby
   end
 end
 
