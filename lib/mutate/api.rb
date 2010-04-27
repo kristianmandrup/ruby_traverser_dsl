@@ -11,10 +11,38 @@ module RubyAPI
     # :arg => 'ripper', :replace_arg => 'rapper'
     def replace(options)
       arguments.elements.each do |elem|
-        puts "ELEMENT:"
-        puts elem.to_yaml
+        case elem
+        when Ruby::Arg
+          elem.replace_arg(options) if options[:arg]  
+        end
       end
     end
+
+    def replace_arg(options) 
+      case self.arg
+      when Ruby::String                                    
+        if string_arg?(options[:arg])  
+          self.arg.elements[0].token = options[:replace_arg] 
+        end
+      end
+    end
+    
+    def string_arg?(txt)
+      self.arg.elements[0].token == txt
+    end
+
+    # --- &id003 !ruby/object:Ruby::Arg 
+    # arg: &id001 !ruby/object:Ruby::String 
+    #   elements: !seq:Ruby::Node::Composite::Array 
+    #     - !ruby/object:Ruby::StringContent 
+    #       parent: *id001
+    #       position: !ruby/object:Ruby::Node::Position 
+    #         col: 7
+    #         row: 2
+    #       prolog: !ruby/object:Ruby::Prolog 
+    #         elements: !seq:Ruby::Node::Composite::Array []
+    # 
+    #       token: ripper
     
     protected
 
