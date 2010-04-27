@@ -10,7 +10,7 @@ class TraversalTest < Test::Unit::TestCase
     code = Ripper::RubyBuilder.build(src)               
     call_node = code.find_call('gem', :args => ['ripper', {:src => 'github'}]) 
     assert_equal Ruby::Call, call_node.class
-  end
+  end 
   
   define_method :"test find gem statement inside group" do                           
     src = %q{    
@@ -42,20 +42,50 @@ class TraversalTest < Test::Unit::TestCase
     end
   end   
        
+
+    define_method :"test find variabel in method definition" do                           
+      src = %q{    
+        def hello_world(a)
+          my_var
+        end  
+      }    
+            
+      code = Ripper::RubyBuilder.build(src)               
+
+      # def_node = code.find_def('hello_world', :params => ['a'])
+      code.inside_def('hello_world', :params => ['a']) do |b|
+        # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
+        call_node = b.find_variable('my_var')
+        assert_equal Ruby::Variable, call_node.class
+        puts call_node.to_ruby
+      end
+    end  
+
+    define_method :"test find assignment in method definition" do                           
+      src = %q{    
+        def hello_world(a)
+          my_var = 2
+        end  
+      }    
+            
+      code = Ripper::RubyBuilder.build(src)               
+
+      code.inside_def('hello_world', :params => ['a']) do |b|
+        # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
+        call_node = b.find_assignment('my_var')
+        assert_equal Ruby::Assignment, call_node.class
+        puts call_node.to_ruby
+      end
+    end  
+
   
   define_method :"test find method definition" do                           
     src = %q{    
-      def hello_world(b)
-        3
-      end
-  
       def hello_world(a)
         gem 'ripper', :src => 'github' 
-      end
-  
+      end  
     }
     code = Ripper::RubyBuilder.build(src)               
-    # def_node = code.find_def('hello_world', :params => ['a'])
     code.inside_def('hello_world', :params => ['a']) do |b|
       call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
       assert_equal Ruby::Call, call_node.class

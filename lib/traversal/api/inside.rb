@@ -16,7 +16,7 @@ module RubyAPI
     end
 
     def inside_def(name, options = {}, &block)
-      s = find_def(name, options)
+      s = find_def(name, options)  
       block.arity < 1 ? s.instance_eval(&block) : block.call(s)
     end
   end

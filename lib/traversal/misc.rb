@@ -2,7 +2,7 @@ module Ruby
   class Node
     module Traversal
       module Misc
-        def args?(value, with_block = nil)
+        def args?(value, with_block = nil) 
           found = 0        
           obj = has_a_block?(with_block) ? self.block : self
           args_list = get_args_list(obj)
@@ -13,7 +13,7 @@ module Ruby
               v = v[:array] if v.respond_to?(:has_key?) && v[:array]              
               found += 1 if argument == v
             end
-          end       
+          end     
           return found == value.size
         end                             
         

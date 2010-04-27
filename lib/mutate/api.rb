@@ -7,6 +7,14 @@ module RubyAPI
       ruby_code = Ripper::RubyBuilder.build(code)
       obj.elements << ruby_code.elements[0]
     end
+
+    # :arg => 'ripper', :replace_arg => 'rapper'
+    def replace(options)
+      arguments.elements.each do |elem|
+        puts "ELEMENT:"
+        puts elem.to_yaml
+      end
+    end
     
     protected
 

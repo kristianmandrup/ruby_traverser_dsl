@@ -1,3 +1,5 @@
+require 'yaml'
+
 module RubyAPI
   module Finders
     def find_module(name)
@@ -9,11 +11,20 @@ module RubyAPI
       get_obj.select(Ruby::Class, options).first    
     end
 
+    def find_variable(name, options = {})
+      options.merge!(:token => name)      
+      get_obj.select(Ruby::Variable, options).first      
+    end
+
+    def find_assignment(name, options = {})
+      options.merge!(:left_token => name)      
+      get_obj.select(Ruby::Assignment, options).first      
+    end    
+
     def find_call(name, options = {})
       options.merge!(:identifier => name)      
       obj = get_obj(options)   
-      return obj.select(Ruby::Call, options).first if obj.class != Ruby::Call
-      obj
+      return obj.select(Ruby::Call, options).first
     end 
 
     def find_block(name, options = {})  
@@ -25,7 +36,7 @@ module RubyAPI
 
     def find_def(name, options = {})
       options.merge!(:identifier => name)
-      get_obj.select(Ruby::Method, options).first    
+      get_obj.select(Ruby::Method, options).first
     end 
   end
 end  
