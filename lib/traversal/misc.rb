@@ -4,7 +4,7 @@ module Ruby
       module Misc
         def args?(value, with_block = nil)
           found = 0        
-          obj = with_block ? self.block : self
+          obj = has_a_block?(with_block) ? self.block : self
           args_list = get_args_list(obj)
           return false if !args_list    
           args_list.elements.each do |arg|    
@@ -16,6 +16,10 @@ module Ruby
           end       
           return found == value.size
         end                             
+        
+        def has_a_block?(with_block)
+          with_block && self.respond_to?(:block)
+        end
 
         def get_args_list(obj)                         
           return obj.params if obj.respond_to? :params 

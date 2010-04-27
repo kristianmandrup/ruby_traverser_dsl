@@ -24,8 +24,8 @@ class TraversalTest < Test::Unit::TestCase
     call_node = block_node.find_call('gem', :args => ['ripper', {:src => 'github'}]) 
     assert_equal Ruby::Call, call_node.class
     # puts call_node.to_ruby
-  end  
-  
+  end     
+            
   define_method :"test find gem statement inside group using better DSL" do                           
     src = %q{    
       gem 'ripper', :src => 'github', :blip => 'blap'       
@@ -40,8 +40,8 @@ class TraversalTest < Test::Unit::TestCase
       assert_equal Ruby::Call, call_node.class
       puts call_node.to_ruby
     end
-  end
-  
+  end   
+       
   
   define_method :"test find method definition" do                           
     src = %q{    
@@ -57,11 +57,11 @@ class TraversalTest < Test::Unit::TestCase
     code = Ripper::RubyBuilder.build(src)               
     # def_node = code.find_def('hello_world', :params => ['a'])
     code.inside_def('hello_world', :params => ['a']) do |b|
-      call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}])
+      call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
       assert_equal Ruby::Call, call_node.class
       puts call_node.to_ruby
     end
-  end 
+  end  
 
   
 end

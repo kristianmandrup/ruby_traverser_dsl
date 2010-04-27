@@ -10,8 +10,10 @@ module RubyAPI
     end
 
     def find_call(name, options = {})
-      options.merge!(:identifier => name)
-      get_obj.select(Ruby::Call, options).first    
+      options.merge!(:identifier => name)      
+      obj = get_obj(options)   
+      return obj.select(Ruby::Call, options).first if obj.class != Ruby::Call
+      obj
     end 
 
     def find_block(name, options = {})  

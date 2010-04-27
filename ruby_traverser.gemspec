@@ -17,7 +17,10 @@ Gem::Specification.new do |s|
     "README.markdown"
   ]
   s.files = [
+    ".gitignore",
+    "LICENSE",
     "README.markdown",
+    "Rakefile",
     "VERSION",
     "lib/ruby_traverser.rb",
     "lib/traversal/api/finders.rb",
@@ -27,6 +30,10 @@ Gem::Specification.new do |s|
     "lib/traversal/mixin.rb",
     "lib/traversal/module.rb",
     "lib/traversal/patch.rb",
+    "ruby_traverser.gemspec",
+    "spec/ruby_traverser_spec.rb",
+    "spec/spec.opts",
+    "spec/spec_helper.rb",
     "test/test_helper.rb",
     "test/traversal/gemfile_test.rb",
     "test/traversal/ruby_api_traversal_test.rb"

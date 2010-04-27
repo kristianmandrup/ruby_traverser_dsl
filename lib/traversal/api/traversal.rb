@@ -4,12 +4,22 @@ require 'traversal/api/inside'
 module RubyAPI 
   include Finders
   include Inside   
-
-protected
-  def get_obj  
-    return self.block[1] if self.class == Ruby::Method     
+  
+  protected
+  
+  def get_obj(options = {})
+    # pp self if options[:verbose]      
+    if self.class == Ruby::Method     
+      obj = self.block 
+      puts "size: #{obj.size}"
+      if obj.size == 1
+        return obj[0] 
+      else
+        return obj[1]      
+      end
+    end
     self
-  end
+  end  
 end
 
 module Ruby
