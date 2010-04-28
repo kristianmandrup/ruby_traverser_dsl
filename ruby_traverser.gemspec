@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ruby_traverser}
-  s.version = "0.1.1"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = %q{2010-04-27}
+  s.date = %q{2010-04-28}
   s.description = %q{traverse a ruby code model and optionally mutate it along the way using a nice rubyish DSL}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
@@ -21,22 +21,30 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.markdown",
     "Rakefile",
+    "TODO.txt",
     "VERSION",
-    "lib/mutate/api.rb",
-    "lib/mutate/replacer.rb",
-    "lib/rails/api_wrapper.rb",
+    "lib/config/api.rb",
+    "lib/config/has_ext.rb",
+    "lib/config/misc.rb",
+    "lib/config/mixin.rb",
+    "lib/config/module.rb",
+    "lib/config/patch.rb",
+    "lib/manipulation/api.rb",
+    "lib/manipulation/delete/api.rb",
+    "lib/manipulation/helpers.rb",
+    "lib/manipulation/insert/api.rb",
+    "lib/manipulation/position.rb",
+    "lib/manipulation/update/api.rb",
+    "lib/query/api.rb",
+    "lib/query/find.rb",
+    "lib/rails/api.rb",
+    "lib/rails/gemfile.rb",
     "lib/ruby_traverser.rb",
-    "lib/traversal/api/finders.rb",
-    "lib/traversal/api/inside.rb",
-    "lib/traversal/api/traversal.rb",
-    "lib/traversal/misc.rb",
-    "lib/traversal/mixin.rb",
-    "lib/traversal/module.rb",
-    "lib/traversal/patch.rb",
     "ruby_traverser.gemspec",
     "spec/ruby_traverser_spec.rb",
     "spec/spec.opts",
     "spec/spec_helper.rb",
+    "test/mutate/delete_test.rb",
     "test/mutate/mutate_class_test.rb",
     "test/mutate/mutate_test.rb",
     "test/rails_api/gemfile_api.rb",
@@ -52,6 +60,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/ruby_traverser_spec.rb",
     "spec/spec_helper.rb",
+    "test/mutate/delete_test.rb",
     "test/mutate/mutate_class_test.rb",
     "test/mutate/mutate_test.rb",
     "test/rails_api/gemfile_api.rb",
