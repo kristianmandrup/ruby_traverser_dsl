@@ -27,7 +27,6 @@ module RubyAPI
     def inside_indent
       if self.class == Ruby::Class
         pos = ldelim.position.col
-        puts "pos: #{pos}"
         return pos
       end
       2

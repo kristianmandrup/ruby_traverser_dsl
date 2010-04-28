@@ -16,10 +16,13 @@ end}
     code = Ripper::RubyBuilder.build(src)              
     code.inside_class('Monty', :superclass => 'Abc::Blip') do |b|
       assert_equal Ruby::Class, b.class                                  
-      gem_call = b.append_code("gem 'abc'")
-      gem_123 = gem_call.append_code("gem '123'")      
+      gem_abc = b.append_code("gem 'abc'")
+      blip = b.append_code("blip")
+      gem_123 = gem_abc.append_code("gem '123'")      
       gem_123.append_comment("hello")      
-      b.append_code(def_src)      
+      my_def = b.append_code(def_src)      
+      
+      b.prepend_code("gem '789'")
       puts b.to_ruby
     end
   end

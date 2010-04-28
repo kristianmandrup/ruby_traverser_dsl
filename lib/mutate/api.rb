@@ -13,18 +13,52 @@ module RubyAPI
     include Replacer
     
     def append_code(code)
+      return append_code_simple(code) if !elemental?
       obj = object
       indentation = obj.last_indent  
       code =  "\n#{code}\n".indent(' ', indentation)
       ruby_code = Ripper::RubyBuilder.build(code)
       inject_code = ruby_code.elements[0]
       obj.get_elements << inject_code
+      inject_code
+    end
+
+    def append_code_simple(code)
+      indentation = position.col
+      code =  "\n#{code}\n".indent(' ', indentation)
+      ruby_code = Ripper::RubyBuilder.build(code)
+      inject_code = ruby_code.elements[0]
+      index = parent.find_index(self)
+      parent.get_elements.insert(index+1, inject_code)
+      inject_code
+    end
+
+    def find_index(obj)
+      get_elements.each_with_index do |elem, i|
+        if elem == obj
+          return i
+        end
+      end        
+    end
+
+    def prepend_code(code)
+      obj = object
+      indentation = obj.first_indent  
+      code =  "\n#{code}\n".indent(' ', indentation)
+      ruby_code = Ripper::RubyBuilder.build(code)
+      inject_code = ruby_code.elements[0]
+      obj.get_elements.insert(0, inject_code)
       obj
     end
+
 
     def append_comment(text)
       append_code("# #{text}")
     end      
+
+    def elemental?
+      respond_to?(:body) || respond_to?(:elements)
+    end
 
     def get_elements
       case self
@@ -49,8 +83,29 @@ module RubyAPI
 
     def last_position(elements) 
       last_element = elements.last
-      return position.col if last_element.class == Ruby::Token 
+      return position.col 
+      return position.col if simple_pos?
       return last_element.identifier.position.col if elements && elements.size > 0
+      inside_indent
+    end
+
+    def simple_pos?       
+      [Ruby::Token, Ruby::Variable].include?(last_element.class)
+    end
+
+    def first_indent
+      case self
+      when Ruby::Block, Ruby::Class
+        first_position(get_elements)                           
+      else
+        puts "unknown: #{obj.class}"
+      end
+    end
+
+    def first_position(elements) 
+      first_element = elements.first
+      return position.col if simple_pos?
+      return first_element.identifier.position.col if elements && elements.size > 0
       inside_indent
     end
 
