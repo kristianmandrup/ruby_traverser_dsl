@@ -96,13 +96,13 @@ Source code:
   end  
 </pre>
 
-Ruby code find DSL:
+find variable DSL:
 <pre>
 code = Ripper::RubyBuilder.build(src)               
 code.inside_def('hello_world', :params => ['a']) do |b|
-  call_node = b.find_variable('my_var')
-  assert_equal Ruby::Variable, call_node.class
-  puts call_node.to_ruby
+  var_node = b.find_variable('my_var')
+  assert_equal Ruby::Variable, var_node.class
+  puts var_node.to_ruby
 end
 </pre>
 
@@ -116,11 +116,13 @@ Source code:
   end    
 </pre>
 
-Ruby code find DSL:
+find assignment DSL:
 <pre>
   code = Ripper::RubyBuilder.build(src)               
   code.inside_def('hello_world', :params => ['a']) do |b|
-    call_node = b.find_assignment('my_var')
+    ass_node = b.find_assignment('my_var')
+    assert_equal Ruby::Assignment, ass_node.class
+    puts ass_node.to_ruby
   end  
 </pre>
 

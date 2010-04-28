@@ -52,9 +52,9 @@ class TraversalTest < Test::Unit::TestCase
             
       code = Ripper::RubyBuilder.build(src)               
       code.inside_def('hello_world', :params => ['a']) do |b|
-        call_node = b.find_variable('my_var')
-        assert_equal Ruby::Variable, call_node.class
-        puts call_node.to_ruby
+        var_node = b.find_variable('my_var')
+        assert_equal Ruby::Variable, var_node.class
+        puts var_node.to_ruby
       end
     end  
 
@@ -67,9 +67,9 @@ class TraversalTest < Test::Unit::TestCase
             
       code = Ripper::RubyBuilder.build(src)               
       code.inside_def('hello_world', :params => ['a']) do |b|
-        call_node = b.find_assignment('my_var')
-        assert_equal Ruby::Assignment, call_node.class
-        puts call_node.to_ruby
+        ass_node = b.find_assignment('my_var')
+        assert_equal Ruby::Assignment, ass_node.class
+        puts ass_node.to_ruby
       end
     end  
 

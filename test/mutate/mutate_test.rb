@@ -66,10 +66,10 @@ end
 
     code.inside_def('hello_world', :params => ['a']) do |b|
       # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
-      call_node = b.find_assignment('my_var')
-      assert_equal Ruby::Assignment, call_node.class
+      ass_node = b.find_assignment('my_var')
+      assert_equal Ruby::Assignment, ass_node.class
       
-      call_node.replace(:value => "3")      
+      ass_node.replace(:value => "3")      
       puts b.to_ruby
     end
   end  
