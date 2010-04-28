@@ -98,9 +98,14 @@ module RubyAPI
 
       # update :select => {...}, :with => {...}
       # update :select => {...}, :with_code => 'code'
-      def update(options)                
-        return replace_value(options) if options[:value]
-        replace options[:select].merge(options) if options[:select]
+      def update(options, &block)                
+        s = replace_value(options) if options[:value]
+        s = replace options[:select].merge(options) if options[:select]        
+        if block_given?
+          block.arity < 1 ? s.instance_eval(&block) : block.call(s)      
+        else
+          s
+        end        
       end
       
       # :arg => 'ripper', :replace_arg => 'rapper'

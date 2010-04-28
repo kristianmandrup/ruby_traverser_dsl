@@ -37,13 +37,21 @@ module Inserter
     inject_code
   end
   
-  def insert(position, code)
+  def insert(position, code, &block)
     case position
     when :after
-      append_code(code)
+      s = append_code(code)
     when :before
-      prepend_code(code)
-    end
+      s = prepend_code(code)
+    else
+      raise Error, "Invalid position given: #{position}, must be either :before or :after"
+    end  
+    
+    if block_given?
+      block.arity < 1 ? s.instance_eval(&block) : block.call(s)      
+    else
+      s
+    end    
   end
   
 end

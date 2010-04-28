@@ -1,21 +1,15 @@
 module RubyAPI
   module Inside              
-    def inside_block(name, options = {}, &block) 
-      call_block(find_block(name, options), options, &block)
-    end 
-
-    def inside_module(name, &block)
-      call_block(find_module(name), options, &block)      
-    end
-
-    def inside_class(name, options = {}, &block) 
-      call_block(find_class(name, options), options, &block)
-    end
-
-    def inside_def(name, options = {}, &block)
-      call_block(find_def(name, options), options, &block)
-    end
-    
+    def inside(type, name, options = {}, &block) 
+      s = find(type, name, options)
+      s.extend(options[:extend]) if options[:extend] 
+      if block_given?
+        block.arity < 1 ? s.instance_eval(&block) : block.call(s)      
+      else
+        s
+      end
+    end        
+        
     protected
     
     def call_block(s, options, &block)

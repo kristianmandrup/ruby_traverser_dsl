@@ -11,303 +11,32 @@ See the [Wiki](http://wiki.github.com/kristianmandrup/ruby_traverser_dsl "Wiki")
 * Ruby 1.9
 * ripper2ruby >= 0.0.2 
 
-## Finders ##
+## Ruby code Query API ##
 
-* find_module(name)
-* find_class(name, options = {})
-* find_call(name, options = {})
-* find_block(name, options = {})
-* find_def(name, options = {})
-* find_variable(name, options = {})
-* find_assignment(name, options = {})
+See [Query API](http://wiki.github.com/kristianmandrup/ruby_traverser_dsl/finder-api "Query API")
 
-## Find module ##
+* find(type, name, options, &block)
+* inside (alias for find which requires a block argument)
 
-<pre>
-  src = %q{      
-    module Xyz::Xxx::Blip
-      2
-    end    
-  }
-  
-  code = Ripper::RubyBuilder.build(src)          
-  module_node = code.find_module('Xyz::Xxx::Blip') 
-  assert_equal Ruby::Module, module_node.class 
-</pre>
+The following symbols are supported `[:module, :class, :variable, :assignment, :call, :block, :def]`
 
-## Find class ##
+## Manipulation API ##
 
-<pre>
-# class Monty::Python ... end
-clazz_node = code.find_class('Monty::Python')   
-</pre>
+See [Manipulation API](http://wiki.github.com/kristianmandrup/ruby_traverser_dsl/manipulation-api "Manipulation API")
 
-Find class inheriting from a certain superclass
-<pre>
-# class Monty < Abc::Blip ... end
-clazz_node = code.find_class('Monty', :superclass => 'Abc::Blip')   
-</pre>
-
-## Find call ##
-                                                               
-<pre>
-# gem 'ripper', :src => 'github' 
-gem_call = code.find_call('gem', :args => ['ripper', {:src => 'github'}])   
-</pre>
-
-
-## Find block ##        
-
-<pre>
-# my_block do ... end
-block_node = code.find_block('my_block')   
-</pre>
-
-<pre>
-# my_block do |v| ... end
-block_node = code.find_block('my_block', :block_params => ['v'])   
-</pre>
-
-<pre>
-# my_block 7, 'a' do ... end
-block_node = code.find_block('my_block', :args => [7, 'a'])   
-</pre>
-                                                 
-<pre>
-# my_block 7, 'a', :k => 32 do |v| ... end
-block_node = code.find_block('my_block', :args => [7, 'a', {:k => 32}], :block_params => ['v'])   
-</pre>
-
-<pre>
-# my_block :a => 7, b => 3 do |v| ... end
-block_node = code.find_block('my_block', :args => [{:a => 7, 'b' => 3}])   
-</pre>     
-
-<pre>                                                                      
-# my_block ['a', 'b'] do |v| ... end  
-block_node = code.find_block('my_block', :args => [{:array =>['a', 'b']}])   
-</pre>
-
-
-## Find variable ##
-
-Source code: 
-<pre>
-  def hello_world(a)
-    my_var
-  end  
-</pre>
-
-find variable DSL:
-<pre>
-code = Ripper::RubyBuilder.build(src)               
-code.inside_def('hello_world', :params => ['a']) do |b|
-  var_node = b.find_variable('my_var')
-  assert_equal Ruby::Variable, var_node.class
-  puts var_node.to_ruby
-end
-</pre>
-
-
-## Find assignment ##
-
-Source code: 
-<pre>
-  def hello_world(a)
-    my_var = 2
-  end    
-</pre>
-
-find assignment DSL:
-<pre>
-  code = Ripper::RubyBuilder.build(src)               
-  code.inside_def('hello_world', :params => ['a']) do |b|
-    ass_node = b.find_assignment('my_var')
-    assert_equal Ruby::Assignment, ass_node.class
-    puts ass_node.to_ruby
-  end  
-</pre>
-
-## Inside ##
-
-The following finder methods have corresponding `inside_` functions, which support block DSL constructs as shown below.
-
-* inside_module
-* inside_class
-* inside_def
-* inside_block
-
-<pre>
-  # source code
-  src = %q{      
-    gem 'ripper', :src => 'github', :blip => 'blap'       
-    group :test do
-      gem 'ripper', :src => 'github' 
-    end  
-  }
-</pre>
-
-<pre>
-  code = Ripper::RubyBuilder.build(src)              
-  # chaining finders using 'inside__' DSL block constructs  
-  code.inside_block('group', :args => [:test]) do |b|
-    call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}])
-    assert_equal Ruby::Call, call_node.class
-    puts call_node.to_ruby # output ruby code as string for found node 
-  end    
-</pre>
-
-<pre>  
-  src = %q{    
-    def hello_world(b)
-      3
-    end
-
-    def hello_world(a)
-      gem 'ripper', :src => 'github' 
-    end
-
-  }  
-</pre>    
-
-<pre>     
-  # chaining finders using 'inside__' DSL block constructs
-  code = Ripper::RubyBuilder.build(src)            
-  code.inside_def('hello_world', :params => ['a']) do |b|
-    call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}])
-    assert_equal Ruby::Call, call_node.class
-    puts call_node.to_ruby # output ruby code as string for found node 
-  end  
-</pre>
-
-## Code Mutation API ##
-
-The API now also supports a wide variety of code mutations using a DSL.
-More information will soon be available here or on the github wiki.
-Check the test/mutate folder for test demonstrating what is currently possible.
-
-## Append and Prepend code ##
-
-Source BEFORE mutations:
-<pre>
-class Monty < Abc::Blip  
-end
-</pre>
-
-<pre>
-    src = %q{  class Monty < Abc::Blip 
-  end}
-    
-    def_src = %q{
-def my_fun
-end}
-
-    def_code = Ripper::RubyBuilder.build(def_src)    
-    code = Ripper::RubyBuilder.build(src)
-
-    # append code examples                  
-    code.inside_class('Monty', :superclass => 'Abc::Blip') do |b|
-      assert_equal Ruby::Class, b.class                                  
-      gem_abc = b.append_code("gem 'abc'")
-      blip = b.append_code("blip")
-      gem_123 = gem_abc.append_code("gem '123'")      
-      gem_123.append_comment("hello")      
-      my_def = b.append_code(def_src)      
-      
-      b.prepend_code("gem '789'")
-      puts b.to_ruby
-    end
-</pre>
-
-Source AFTER mutations:
-<pre>
-class Monty < Abc::Blip  
-  gem '789'  
-  gem 'abc'  
-  gem '123'  
-  blip  
-
-  def my_fun
-  end 
-end
-</pre>  
-
-
-## Replace code ##
-
-Source BEFORE mutations:
-<pre>
-group :test do
-  gem 'ripper', :src 
-  my_var = 2  
-end  
-</pre>
-
-<pre>
-    src = %q{                 
-group :test do
-  gem 'ripper', :src 
-  my_var = 2  
-end  
-    }
-
-    code = Ripper::RubyBuilder.build(src) 
-    # replace examples                                      
-    code.inside_block('group', :args => [:test]) do |b|
-      call_node = b.find_call('gem', :args => ['ripper'])
-      assert_equal Ruby::Call, call_node.class
-      call_node.replace(:arg => :src , :replace_code => "{:src => 'unknown'}")
-      call_node.replace(:value => "3")            
-      puts b.to_ruby
-    end       
-  end  
-</pre>
-
-Source AFTER mutations:
-<pre>
-group :test do
-  gem 'ripper', {:src => 'unknown'} 
-  my_var = 3
-end  
-</pre>  
-
-## Delete code ##
-
-Source BEFORE mutations:
-<pre>
-group :test do
-  gem 'ripper', :src 
-  my_var = 2  
-end  
-</pre>
-
-<pre>
-src = %q{    
-  def hello_world(a)
-    my_var = 2
-  end  
-}    
-    
-code = Ripper::RubyBuilder.build(src)               
-
-code.inside_def('hello_world', :params => ['a']) do |b|
-  # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
-  ass_node = b.find_assignment('my_var')
-  assert_equal Ruby::Assignment, ass_node.class    
-  ass_node.delete
-  puts b.to_ruby
-end
-</pre>
-
-Source AFTER mutations:
-<pre>
-group :test do
-  gem 'ripper', :src 
-end  
-</pre>
-
-
+The insert and update API support blocks and always returns the updated or inserted node
 Note: The mutation API code was developed quickly in a test-driven fashion, but is in need of a major refactoring overhaul sometime soon...
+
+### Insert ##
+* insert(position, code, &block)
+
+### Update ##
+* update(:select, :with, &block)
+* update(:select, :with_code, &block)
+* update(:value, &block)
+
+### Delete ##
+* delete
 
 ## Note on Patches/Pull Requests ##
  
