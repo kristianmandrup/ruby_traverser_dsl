@@ -5,13 +5,13 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "ruby_traverser"
-    gem.summary = %Q{traverse ruby code using a nice DSL}
-    gem.description = %Q{traverse an object model representation of ruby code using a nice DSL}
+    gem.summary = %Q{traverse and mutate ruby code using a nice DSL}
+    gem.description = %Q{traverse a ruby code model and optionally mutate it along the way using a nice rubyish DSL}
     gem.email = "kmandrup@gmail.com"
     gem.homepage = "http://github.com/kristianmandrup/ruby_trav"
     gem.authors = ["Kristian Mandrup"]
     gem.add_development_dependency "rspec", ">= 2.0.0"
-    gem.add_dependency "ripper2ruby", "> 0.0.1"
+    gem.add_dependency "ripper2ruby", "> 0.0.2"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
     
     # add more gem options here    

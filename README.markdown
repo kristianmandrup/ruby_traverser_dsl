@@ -12,7 +12,8 @@ See the unit tests in the test directory for examples of use.
 * find_call(name, options = {})
 * find_block(name, options = {})
 * find_def(name, options = {})
-
+* find_variable(name, options = {})
+* find_assignment(name, options = {})
 
 ## Find module ##
 
@@ -81,6 +82,44 @@ block_node = code.find_block('my_block', :args => [{:a => 7, 'b' => 3}])
 block_node = code.find_block('my_block', :args => [{:array =>['a', 'b']}])   
 </pre>
 
+
+## Find variable ##
+
+Source code: 
+<pre>
+  def hello_world(a)
+    my_var
+  end  
+</pre>
+
+Ruby code find DSL:
+<pre>
+code = Ripper::RubyBuilder.build(src)               
+code.inside_def('hello_world', :params => ['a']) do |b|
+  call_node = b.find_variable('my_var')
+  assert_equal Ruby::Variable, call_node.class
+  puts call_node.to_ruby
+end
+</pre>
+
+
+## Find assignment ##
+
+Source code: 
+<pre>
+  def hello_world(a)
+    my_var = 2
+  end    
+</pre>
+
+Ruby code find DSL:
+<pre>
+  code = Ripper::RubyBuilder.build(src)               
+  code.inside_def('hello_world', :params => ['a']) do |b|
+    call_node = b.find_assignment('my_var')
+  end  
+</pre>
+
 ## Inside ##
 
 The following finder methods have corresponding `inside_` functions, which support block DSL constructs as shown below.
@@ -133,11 +172,13 @@ The following finder methods have corresponding `inside_` functions, which suppo
   end  
 </pre>
 
-More to come soon... 
+## Code Mutation API ##
 
-## TODO ##
+The API now also supports a wide variety of code mutations using a DSL.
+More information will soon be available here or on the github wiki.
+Check the test/mutate folder for test demonstrating what is currently possible.
 
-Convert into a jeweler gem with dependency on `ripper2ruby`
+Note: The mutation API code was developed in a test-driven fashion, but is in need of a major refactoring overhaul sometime soon...
 
 ## Note on Patches/Pull Requests ##
  
