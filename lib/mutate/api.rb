@@ -84,13 +84,13 @@ module RubyAPI
     def last_position(elements) 
       last_element = elements.last
       return position.col 
-      return position.col if simple_pos?
+      return position.col if simple_pos?(last_element)
       return last_element.identifier.position.col if elements && elements.size > 0
       inside_indent
     end
 
-    def simple_pos?       
-      [Ruby::Token, Ruby::Variable].include?(last_element.class)
+    def simple_pos?(elem)       
+      [Ruby::Token, Ruby::Variable].include?(elem.class)
     end
 
     def first_indent
@@ -104,7 +104,7 @@ module RubyAPI
 
     def first_position(elements) 
       first_element = elements.first
-      return position.col if simple_pos?
+      return position.col if simple_pos?(first_element)
       return first_element.identifier.position.col if elements && elements.size > 0
       inside_indent
     end

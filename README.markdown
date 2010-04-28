@@ -1,9 +1,13 @@
 # Ruby traverser ##
 
 A DSL for traversing ruby code as an object model (graph), which lets you find parts of the ruby code of interest.
-The traverser leverages `ripper2ruby`, which leverages `ripper`, which comes with ruby 1.9. Ruby 1.9 is thus required.
+The traverser leverages `ripper2ruby`, a library for generating a model from ruby source code. `ripper2ruby` leverages `ripper` which comes with ruby 1.9. 
 
 See the unit tests in the test directory for examples of use.
+
+## Requirements ##
+* Ruby 1.9
+* ripper2ruby >= 0.0.2 
 
 ## Finders ##
 
@@ -178,7 +182,92 @@ The API now also supports a wide variety of code mutations using a DSL.
 More information will soon be available here or on the github wiki.
 Check the test/mutate folder for test demonstrating what is currently possible.
 
-Note: The mutation API code was developed in a test-driven fashion, but is in need of a major refactoring overhaul sometime soon...
+## Example use of Mutation API ##
+
+Source BEFORE mutations:
+<pre>
+class Monty < Abc::Blip  
+end
+</pre>
+
+<pre>
+    src = %q{  class Monty < Abc::Blip 
+  end}
+    
+    def_src = %q{
+def my_fun
+end}
+
+    def_code = Ripper::RubyBuilder.build(def_src)    
+    code = Ripper::RubyBuilder.build(src)
+
+    # append code examples                  
+    code.inside_class('Monty', :superclass => 'Abc::Blip') do |b|
+      assert_equal Ruby::Class, b.class                                  
+      gem_abc = b.append_code("gem 'abc'")
+      blip = b.append_code("blip")
+      gem_123 = gem_abc.append_code("gem '123'")      
+      gem_123.append_comment("hello")      
+      my_def = b.append_code(def_src)      
+      
+      b.prepend_code("gem '789'")
+      puts b.to_ruby
+    end
+</pre>
+
+Source AFTER mutations:
+<pre>
+class Monty < Abc::Blip  
+  gem '789'  
+  gem 'abc'  
+  gem '123'  
+  blip  
+
+  def my_fun
+  end 
+end
+</pre>  
+
+
+## Replace example ##
+
+Source BEFORE mutations:
+<pre>
+group :test do
+  gem 'ripper', :src 
+  my_var = 2  
+end  
+</pre>
+
+<pre>
+    src = %q{                 
+group :test do
+  gem 'ripper', :src 
+  my_var = 2  
+end  
+    }
+
+    code = Ripper::RubyBuilder.build(src) 
+    # replace examples                                      
+    code.inside_block('group', :args => [:test]) do |b|
+      call_node = b.find_call('gem', :args => ['ripper'])
+      assert_equal Ruby::Call, call_node.class
+      call_node.replace(:arg => :src , :replace_code => "{:src => 'unknown'}")
+      call_node.replace(:value => "3")            
+      puts b.to_ruby
+    end       
+  end  
+</pre>
+
+Source AFTER mutations:
+<pre>
+group :test do
+  gem 'ripper', {:src => 'unknown'} 
+  my_var = 3
+end  
+</pre>  
+
+Note: The mutation API code was developed quickly in a test-driven fashion, but is in need of a major refactoring overhaul sometime soon...
 
 ## Note on Patches/Pull Requests ##
  

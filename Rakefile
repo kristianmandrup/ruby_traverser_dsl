@@ -11,7 +11,7 @@ begin
     gem.homepage = "http://github.com/kristianmandrup/ruby_trav"
     gem.authors = ["Kristian Mandrup"]
     gem.add_development_dependency "rspec", ">= 2.0.0"
-    gem.add_dependency "ripper2ruby", "> 0.0.2"
+    gem.add_dependency "ripper2ruby", ">= 0.0.2"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
     
     # add more gem options here    
