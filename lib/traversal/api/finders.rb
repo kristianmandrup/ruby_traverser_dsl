@@ -2,6 +2,10 @@ require 'yaml'
 
 module RubyAPI
   module Finders
+    def find(type, name, options = {})
+      send :"find_#{type.to_s}", name, options
+    end
+    
     def find_module(name)
       get_obj.select(Ruby::Module, :identifier => name).first
     end

@@ -17,7 +17,7 @@ end
     code.inside_block('group', :args => [:test]) do |b|
       call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}])
       assert_equal Ruby::Call, call_node.class
-      b.append_code("gem 'abc'")
+      b.insert(:after, "gem 'abc'")
       puts "mutated block:"
       puts b.to_ruby
     end       
@@ -32,9 +32,12 @@ end
 
     code = Ripper::RubyBuilder.build(src)                 
     code.inside_block('group', :args => [:test]) do |b|
-      call_node = b.find_call('gem', :args => ['ripper'])
+      call_node = b.find(:call, 'gem', :args => ['ripper'])
       assert_equal Ruby::Call, call_node.class
-      call_node.replace(:arg => :src , :replace_code => "{:src => 'unknown'}")
+      # call_node.replace(:arg => :src , :replace_code => "{:src => 'unknown'}")
+
+      call_node.update(:select => {:arg => :src}, :with_code => "{:src => 'unknown'}")
+      
       puts b.to_ruby
     end       
   end  
@@ -48,9 +51,9 @@ end
 
     code = Ripper::RubyBuilder.build(src)                 
     code.inside_block('group', :args => [:test]) do |b|
-      call_node = b.find_call('gem', :args => ['ripper'])
+      call_node = b.find(:call, 'gem', :args => ['ripper'])
       assert_equal Ruby::Call, call_node.class
-      call_node.replace(:arg => {:src => 'blip'} , :replace_code => "{:src => 'unknown'}")
+      call_node.update(:select => {:arg => {:src => 'blip'}} , :with_code => "{:src => 'unknown'}")
       puts b.to_ruby
     end       
   end  
@@ -66,10 +69,10 @@ end
 
     code.inside_def('hello_world', :params => ['a']) do |b|
       # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
-      ass_node = b.find_assignment('my_var')
+      ass_node = b.find(:assignment, 'my_var')
       assert_equal Ruby::Assignment, ass_node.class
       
-      ass_node.replace(:value => "3")      
+      ass_node.update(:value => "3")      
       puts b.to_ruby
     end
   end  
@@ -82,7 +85,7 @@ end
     code = Ripper::RubyBuilder.build(src)              
     code.find_class('Monty', :superclass => 'Abc::Blip') do |b|
       assert_equal Ruby::Class, b.class                                  
-      b.append_code("gem 'abc'")   
+      b.insert(:after, "gem 'abc'")   
       puts b.to_ruby      
     end
   end 

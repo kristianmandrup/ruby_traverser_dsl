@@ -7,7 +7,7 @@ module PositionReplacer
   def replace_pos_argument(options)                                    
     case self.arg
     when Ruby::String                                    
-      replace_arg_token(options[:replace_arg])
+      replace_arg_token(options[:with])
     end
   end
 
@@ -95,17 +95,23 @@ module RubyAPI
       include TokenReplacer  
       include HashReplacer
       include ValueReplacer              
+
+      # update :select => {...}, :with => {...}
+      # update :select => {...}, :with_code => 'code'
+      def update(options)                
+        return replace_value(options) if options[:value]
+        replace options[:select].merge(options) if options[:select]
+      end
       
       # :arg => 'ripper', :replace_arg => 'rapper'
-      def replace(options)                       
-        if options[:value]
-          return replace_value(options) 
-        end
-        
-        if position_arg?(options[:arg])
-          return replace_position_arg(options) 
-        end
-        
+      def replace(options)                               
+        return replace_value(options) if options[:value]
+        return replace_position_arg(options) if position_arg?(options[:arg])
+        return replace_arg(options) if options[:arg]
+        raise Error, "Invalid options: #{options}"
+      end
+
+      def replace_arg(options)
         self.arguments.elements.each_with_index do |elem, i|
           case elem
           when Ruby::Arg
@@ -120,7 +126,7 @@ module RubyAPI
       def replace_argument(options)                                    
         case self.arg
         when Ruby::String                                    
-          replace_arg_token(options[:replace_arg]) if matching_string_arg?(options[:arg])  
+          replace_arg_token(options[:with]) if matching_string_arg?(options[:arg])  
         end
       end
 

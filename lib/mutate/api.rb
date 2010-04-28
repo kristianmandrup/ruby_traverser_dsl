@@ -15,31 +15,45 @@ module Deleter
   end
 end  
 
+module Inserter
+  def append_code(code)
+    return append_code_simple(code) if !elemental?
+    obj = object
+    indentation = obj.last_indent  
+    code =  "\n#{code}\n".indent(' ', indentation)
+    ruby_code = Ripper::RubyBuilder.build(code)
+    inject_code = ruby_code.elements[0]
+    obj.get_elements << inject_code
+    inject_code
+  end
+
+  def append_code_simple(code)
+    indentation = position.col
+    code =  "\n#{code}\n".indent(' ', indentation)
+    ruby_code = Ripper::RubyBuilder.build(code)
+    inject_code = ruby_code.elements[0]
+    index = parent.find_index(self)
+    parent.get_elements.insert(index+1, inject_code)
+    inject_code
+  end
+  
+  def insert(position, code)
+    case position
+    when :after
+      append_code(code)
+    when :before
+      prepend_code(code)
+    end
+  end
+  
+end
+
 module RubyAPI
   module Mutator
     include Replacer
-    include Deleter
+    include Deleter 
+    include Inserter
 
-    def append_code(code)
-      return append_code_simple(code) if !elemental?
-      obj = object
-      indentation = obj.last_indent  
-      code =  "\n#{code}\n".indent(' ', indentation)
-      ruby_code = Ripper::RubyBuilder.build(code)
-      inject_code = ruby_code.elements[0]
-      obj.get_elements << inject_code
-      inject_code
-    end
-
-    def append_code_simple(code)
-      indentation = position.col
-      code =  "\n#{code}\n".indent(' ', indentation)
-      ruby_code = Ripper::RubyBuilder.build(code)
-      inject_code = ruby_code.elements[0]
-      index = parent.find_index(self)
-      parent.get_elements.insert(index+1, inject_code)
-      inject_code
-    end
 
     def find_index(obj)
       get_elements.each_with_index do |elem, i|

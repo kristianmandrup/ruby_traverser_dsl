@@ -52,7 +52,7 @@ class TraversalTest < Test::Unit::TestCase
             
       code = Ripper::RubyBuilder.build(src)               
       code.inside_def('hello_world', :params => ['a']) do |b|
-        var_node = b.find_variable('my_var')
+        var_node = b.find(:variable, 'my_var')
         assert_equal Ruby::Variable, var_node.class
         puts var_node.to_ruby
       end

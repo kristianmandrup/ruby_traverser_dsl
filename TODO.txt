@@ -1,0 +1,12 @@
+find
+find :after
+find :before
+
+insert :after, ...
+insert :before, ...
+
+update :select => {...}, :with => {...}
+update :select => {...}, :with_code => 'code'
+
+delete
+delete :select => {...}
