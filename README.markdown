@@ -5,6 +5,8 @@ The traverser leverages `ripper2ruby`, a library for generating a model from rub
 
 See the unit tests in the test directory for examples of use.
 
+See the "Wiki":http://wiki.github.com/kristianmandrup/ruby_traverser_dsl/ for more details.
+
 ## Requirements ##
 * Ruby 1.9
 * ripper2ruby >= 0.0.2 
@@ -184,7 +186,7 @@ The API now also supports a wide variety of code mutations using a DSL.
 More information will soon be available here or on the github wiki.
 Check the test/mutate folder for test demonstrating what is currently possible.
 
-## Example use of Mutation API ##
+## Append and Prepend code ##
 
 Source BEFORE mutations:
 <pre>
@@ -231,7 +233,7 @@ end
 </pre>  
 
 
-## Replace example ##
+## Replace code ##
 
 Source BEFORE mutations:
 <pre>
@@ -268,6 +270,42 @@ group :test do
   my_var = 3
 end  
 </pre>  
+
+## Delete code ##
+
+Source BEFORE mutations:
+<pre>
+group :test do
+  gem 'ripper', :src 
+  my_var = 2  
+end  
+</pre>
+
+<pre>
+src = %q{    
+  def hello_world(a)
+    my_var = 2
+  end  
+}    
+    
+code = Ripper::RubyBuilder.build(src)               
+
+code.inside_def('hello_world', :params => ['a']) do |b|
+  # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
+  ass_node = b.find_assignment('my_var')
+  assert_equal Ruby::Assignment, ass_node.class    
+  ass_node.delete
+  puts b.to_ruby
+end
+</pre>
+
+Source AFTER mutations:
+<pre>
+group :test do
+  gem 'ripper', :src 
+end  
+</pre>
+
 
 Note: The mutation API code was developed quickly in a test-driven fashion, but is in need of a major refactoring overhaul sometime soon...
 

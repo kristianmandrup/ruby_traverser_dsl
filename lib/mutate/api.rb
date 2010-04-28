@@ -8,10 +8,18 @@ class String
 end
 
 
+module Deleter
+  def delete
+    # index = parent.find_index(self)
+    parent.get_elements.delete(self)    
+  end
+end  
+
 module RubyAPI
   module Mutator
     include Replacer
-    
+    include Deleter
+
     def append_code(code)
       return append_code_simple(code) if !elemental?
       obj = object
