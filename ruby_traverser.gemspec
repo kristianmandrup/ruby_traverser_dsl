@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = %q{2010-04-04}
-  s.description = %q{traverse an object model representation of ruby code using a nice DSL}
+  s.date = %q{2010-04-27}
+  s.description = %q{traverse a ruby code model and optionally mutate it along the way using a nice rubyish DSL}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -22,6 +22,9 @@ Gem::Specification.new do |s|
     "README.markdown",
     "Rakefile",
     "VERSION",
+    "lib/mutate/api.rb",
+    "lib/mutate/replacer.rb",
+    "lib/rails/api_wrapper.rb",
     "lib/ruby_traverser.rb",
     "lib/traversal/api/finders.rb",
     "lib/traversal/api/inside.rb",
@@ -34,6 +37,9 @@ Gem::Specification.new do |s|
     "spec/ruby_traverser_spec.rb",
     "spec/spec.opts",
     "spec/spec_helper.rb",
+    "test/mutate/mutate_class_test.rb",
+    "test/mutate/mutate_test.rb",
+    "test/rails_api/gemfile_api.rb",
     "test/test_helper.rb",
     "test/traversal/gemfile_test.rb",
     "test/traversal/ruby_api_traversal_test.rb"
@@ -42,10 +48,13 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
-  s.summary = %q{traverse ruby code using a nice DSL}
+  s.summary = %q{traverse and mutate ruby code using a nice DSL}
   s.test_files = [
     "spec/ruby_traverser_spec.rb",
     "spec/spec_helper.rb",
+    "test/mutate/mutate_class_test.rb",
+    "test/mutate/mutate_test.rb",
+    "test/rails_api/gemfile_api.rb",
     "test/test_helper.rb",
     "test/traversal/gemfile_test.rb",
     "test/traversal/ruby_api_traversal_test.rb"
@@ -57,14 +66,14 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 2.0.0"])
-      s.add_runtime_dependency(%q<ripper2ruby>, ["> 0.0.1"])
+      s.add_runtime_dependency(%q<ripper2ruby>, ["> 0.0.2"])
     else
       s.add_dependency(%q<rspec>, [">= 2.0.0"])
-      s.add_dependency(%q<ripper2ruby>, ["> 0.0.1"])
+      s.add_dependency(%q<ripper2ruby>, ["> 0.0.2"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 2.0.0"])
-    s.add_dependency(%q<ripper2ruby>, ["> 0.0.1"])
+    s.add_dependency(%q<ripper2ruby>, ["> 0.0.2"])
   end
 end
 
