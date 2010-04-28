@@ -36,6 +36,20 @@ module Inserter
     parent.get_elements.insert(index+1, inject_code)
     inject_code
   end
+
+  def prepend_code(code)
+    obj = object
+    indentation = obj.first_indent  
+    code =  "\n#{code}\n".indent(' ', indentation)
+    ruby_code = Ripper::RubyBuilder.build(code)
+    inject_code = ruby_code.elements[0]
+    obj.get_elements.insert(0, inject_code)
+    obj
+  end
+
+  def insert_comment(position, text, &block)
+    insert(position, "# #{text}", &block)    
+  end
   
   def insert(position, code, &block)
     case position
@@ -70,21 +84,6 @@ module RubyAPI
         end
       end        
     end
-
-    def prepend_code(code)
-      obj = object
-      indentation = obj.first_indent  
-      code =  "\n#{code}\n".indent(' ', indentation)
-      ruby_code = Ripper::RubyBuilder.build(code)
-      inject_code = ruby_code.elements[0]
-      obj.get_elements.insert(0, inject_code)
-      obj
-    end
-
-
-    def append_comment(text)
-      append_code("# #{text}")
-    end      
 
     def elemental?
       respond_to?(:body) || respond_to?(:elements)

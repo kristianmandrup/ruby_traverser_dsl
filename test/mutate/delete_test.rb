@@ -14,9 +14,9 @@ class TraversalTest < Test::Unit::TestCase
         
     code = Ripper::RubyBuilder.build(src)               
 
-    code.inside_def('hello_world', :params => ['a']) do |b|
+    code.inside(:def, 'hello_world', :params => ['a']) do |b|
       # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
-      ass_node = b.find_assignment('my_var')
+      ass_node = b.find(:assignment, 'my_var')
       assert_equal Ruby::Assignment, ass_node.class    
       ass_node.delete
       puts b.to_ruby
