@@ -1,6 +1,6 @@
 module Ruby
   class Node
-    module Traversal
+    module Extension
       module Patch
         def select(*args, &block)
           result = []
@@ -35,7 +35,7 @@ module Ruby
           end
           res
         end
-        
+    
         def check_pair(type, value)
           res = case type
           when :is_a
@@ -76,7 +76,7 @@ module Ruby
           # puts "check pair type:#{type}, value:#{value} => #{res}, self: #{self.inspect}" if self.class == Ruby::Variable 
           res
         end 
-        
+    
       end # Patch
     end
   end

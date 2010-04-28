@@ -1,6 +1,6 @@
 module Ruby
   class Node
-    module Traversal
+    module Extension
       module Module
         def namespace?(full_name)
           if full_name.split('::').size > 1

@@ -1,6 +1,6 @@
 module Ruby
   class Node
-    module Traversal
+    module Extension
       module Misc
         def args?(value, with_block = nil) 
           found = 0        
@@ -21,11 +21,11 @@ module Ruby
         def argument_count(args)
           args.reject{|arg| !valid_arg?(arg)}.size
         end
-        
+    
         def valid_arg?(arg)
           arg && arg != {} 
         end
-        
+    
         def has_a_block?(with_block)
           with_block && self.respond_to?(:block)
         end                                
@@ -148,5 +148,5 @@ module Ruby
         end
       end
     end
-  end        
+  end
 end

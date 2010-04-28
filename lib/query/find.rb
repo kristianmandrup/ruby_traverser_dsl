@@ -1,7 +1,7 @@
 require 'yaml'
 
-module RubyAPI
-  module Finders  
+module RubyCodeAPI
+  module Query  
     # Use this to generate all methods except for find_block which is a bit special
     NODES = {
       :module => Ruby::Module, 
@@ -21,6 +21,11 @@ module RubyAPI
         s
       end
     end        
+
+    def inside(type, name, options = {}, &block) 
+      raise StandardError, "Must have block argument" if !block_given?
+      find(type, name, options = {}, &block)       
+    end
 
     instance_eval do   
       NODES.each_pair do |key, value| 
@@ -47,6 +52,22 @@ module RubyAPI
       find_by(:identifier, Ruby::Call, name, options)      
     end 
     
-    alias_method :find_method, :find_def
+    alias_method :find_method, :find_def    
+    
+    protected
+    
+      def inside_indent
+        if self.class == Ruby::Class
+          pos = ldelim.position.col
+          return pos
+        end
+        2
+      end
+
+      def get_obj(options = {})
+        return self.block if self.class == Ruby::Method     
+        self
+      end  
+    
   end
 end  

@@ -1,4 +1,4 @@
-module RubyAPI
+module RubyCodeAPI
   module Rails
     module Gemfile
       def inside_group(name, &block)

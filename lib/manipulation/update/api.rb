@@ -88,9 +88,9 @@ module ValueReplacer
   end 
 end
 
-module RubyAPI
-  module Mutator
-    module Replacer
+module RubyCodeAPI
+  module Manipulation  
+    module Update
       include PositionReplacer
       include TokenReplacer  
       include HashReplacer
