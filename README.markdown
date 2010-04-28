@@ -5,7 +5,7 @@ The traverser leverages `ripper2ruby`, a library for generating a model from rub
 
 See the unit tests in the test directory for examples of use.
 
-See the "Wiki":http://wiki.github.com/kristianmandrup/ruby_traverser_dsl/ for more details.
+See the [Wiki](http://wiki.github.com/kristianmandrup/ruby_traverser_dsl "Wiki") for more details.
 
 ## Requirements ##
 * Ruby 1.9
