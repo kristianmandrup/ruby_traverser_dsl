@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ruby_traverser}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
@@ -35,6 +35,10 @@ Gem::Specification.new do |s|
     "lib/manipulation/insert/api.rb",
     "lib/manipulation/position.rb",
     "lib/manipulation/update/api.rb",
+    "lib/manipulation/update/hash.rb",
+    "lib/manipulation/update/position.rb",
+    "lib/manipulation/update/token.rb",
+    "lib/manipulation/update/value.rb",
     "lib/query/api.rb",
     "lib/query/find.rb",
     "lib/rails/api.rb",
