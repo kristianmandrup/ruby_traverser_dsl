@@ -15,7 +15,6 @@ end
     code = Ripper::RubyBuilder.build(src)                 
     
     code.find(:block, 'group', :args => [:test]) do |b|
-      puts "BLOCK"
       call_node = b.find(:call, 'gem', :args => ['ripper', {:src => 'github'}])
       assert_equal Ruby::Call, call_node.class
       b.insert(:after, "gem 'abc'")
@@ -42,15 +41,16 @@ end
   define_method :"test find gem statement inside group using DSL and then replace matching hash with new hash" do                           
     src = %q{                 
 group :test do
-  gem 'ripper', :src => 'blip'
+  gem 'kris', 2, :src => 'goody', 
 end  
     }
 
     code = Ripper::RubyBuilder.build(src)                 
     code.inside(:block, 'group', :args => [:test]) do |b|
-      call_node = b.find(:call, 'gem', :args => ['ripper'])
+      call_node = b.find(:call, 'gem', :args => ['kris'])
       assert_equal Ruby::Call, call_node.class
-      call_node.update(:select => {:arg => {:src => 'blip'}} , :with_code => "{:src => 'unknown'}")
+      # call_node.update(:select => {:arg => {:src => 'goody'}} , :with_code => "{:src => 'unknown'}")
+      # call_node.replace(:arg => '#1' , :with_code => "{:src => 'known'}")
       puts b.to_ruby
     end       
   end  
@@ -65,8 +65,6 @@ end
     code = Ripper::RubyBuilder.build(src)               
 
     code.find(:def, 'hello_world', :params => ['a']) do |b|
-      puts "HELLO"
-      # call_node = b.find_call('gem', :args => ['ripper', {:src => 'github'}], :verbose => true)
       ass_node = b.find(:assignment, 'my_var')
       assert_equal Ruby::Assignment, ass_node.class
       

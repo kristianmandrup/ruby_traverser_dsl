@@ -11,6 +11,9 @@ module RubyCodeAPI
       :call => Ruby::Call, 
       :def => Ruby::Method
     }
+
+    class FindError < StandardError
+    end      
     
     def find(type, name, options = {}, &block) 
       s = send :"find_#{type.to_s}", name, options
@@ -23,7 +26,7 @@ module RubyCodeAPI
     end        
 
     def inside(type, name, options = {}, &block) 
-      raise StandardError, "Must have block argument" if !block_given?
+      raise FindError, "Must have block argument" if !block_given?
       find(type, name, options = {}, &block)       
     end
 

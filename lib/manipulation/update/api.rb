@@ -1,100 +1,18 @@
-module PositionReplacer
-  def replace_position_arg(options)
-    pos = position_arg?(options[:arg])
-    self.arguments.elements[pos.to_i].replace_pos_argument(options)      
-  end
-
-  def replace_pos_argument(options)                                    
-    case self.arg
-    when Ruby::String                                    
-      replace_arg_token(options[:with])
-    end
-  end
-
-  def position_arg?(arg)       
-    return arg[1] if arg && arg[0]  == '#'
-    nil
-  end
-end
-
-module TokenReplacer
-  def replace_arg_token(replacement)
-    self.arg.elements[0].token = replacement         
-  end
-
-  def matching_string_arg?(txt)
-    self.arg.elements[0].token == txt
-  end                    
-end
-
-module HashReplacer
-  def hash_arg?(arg) 
-    case arg
-    when Hash 
-      matching_hash_arg?(arg)
-    when Symbol
-      matching_symbol_arg?(arg)      
-    end
-  end                    
-
-  def replace_hash_arg(options) 
-    src = options[:replace_code]        
-    code = Ripper::RubyBuilder.build(src)
-    code.set_ldelim(self.arg) 
-    self.arg = code
-  end
-
-  def set_ldelim(arg)
-    if arg.respond_to? :elements
-      self.ldelim = arg.elements[0].key.ldelim
-      self.ldelim.token = ''
-    else                  
-      self.ldelim = arg.ldelim
-    end
-  end
-  
-  def matching_hash_arg?(arg)
-    if self.arg.respond_to? :elements
-      if self.arg.elements[0].class == Ruby::Assoc
-        key = self.arg.elements[0].key
-        value = self.arg.elements[0].value
-        arg_key = arg.first[0]
-        arg_value = arg.first[1]
-        return key.identifier.token.to_sym == arg_key && value.elements[0].token == arg_value
-      end
-    end
-    false
-  end
-  
-  def matching_symbol_arg?(arg)
-    if self.arg.respond_to? :elements
-      if self.arg.elements[0].class == Ruby::Assoc
-        return self.arg.elements[0].key.identifier.token.to_sym == arg
-      end
-    else
-      # remove ':' token from symbol      
-      self.arg.ldelim.token = ''
-      return self.arg.identifier.token.to_sym == arg       
-    end
-    false
-  end
-end
-
-module ValueReplacer
-  def replace_value(options)
-    if self.class == Ruby::Assignment 
-      self.right.token = options[:value]
-    end
-  end 
-end
+require 'manipulation/update/value'
+require 'manipulation/update/position'
+require 'manipulation/update/hash'
+require 'manipulation/update/token'
 
 module RubyCodeAPI
   module Manipulation  
     module Update
-      include PositionReplacer
-      include TokenReplacer  
-      include HashReplacer
-      include ValueReplacer              
+      include Position
+      include Token  
+      include Hash
+      include Value              
+
+      class UpdateError < StandardError
+      end      
 
       # update :select => {...}, :with => {...}
       # update :select => {...}, :with_code => 'code'
@@ -111,9 +29,12 @@ module RubyCodeAPI
       # :arg => 'ripper', :replace_arg => 'rapper'
       def replace(options)                               
         return replace_value(options) if options[:value]
-        return replace_position_arg(options) if position_arg?(options[:arg])
+        if position_arg?(options[:arg])
+          puts "POSITION ARG"
+          return replace_position_arg(options) 
+        end
         return replace_arg(options) if options[:arg]
-        raise Error, "Invalid options: #{options}"
+        raise UpdateError, "Invalid replace options: #{options}"
       end
 
       def replace_arg(options)
@@ -132,6 +53,8 @@ module RubyCodeAPI
         case self.arg
         when Ruby::String                                    
           replace_arg_token(options[:with]) if matching_string_arg?(options[:arg])  
+        else
+          raise UpdateError, "Invalid replace_argument options: #{options}"          
         end
       end
 

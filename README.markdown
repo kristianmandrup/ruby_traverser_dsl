@@ -40,6 +40,21 @@ The insert and update API support blocks and always returns the updated or inser
 * update(:select, :with_code, &block)
 * update(:value, &block)
 
+Supports updating 
+* arguments (for method calls, block and method definitions)
+* assignment values (for assignments)
+
+Argument find for update
+* by position (fx :arg => '#1')
+* by key name (fx :arg => :src) 
+* by value (fx :arg => 'blip')
+
+Note:
+Update needs some polishing and is still a little buggy!
+                                                              
+TODO:
+update identifier of module, class, method call and method definition. 
+
 ### Delete ##
 * delete
 
