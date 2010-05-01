@@ -28,3 +28,40 @@ class String
     (char * count) + gsub(/(\n+)/) { $1 + (char * count) }
   end
 end
+
+# TODO
+        
+# call_node.update(:select => {:arg => :src}, :with_code => "{:src => 'unknown'}")      
+# 
+# update changes to:
+# --
+# n.find(:arg => :src).update!(:arg => :unknown)
+# 
+# n.find(:arg => :src).update! do
+#   "{:src => 'unknown'}"
+# end
+
+# update should work on:
+# * Ruby::Module, identifier
+# * Ruby::Class, identifier 
+# * Ruby::Variable
+#  - identifier
+#  - value
+# 
+# * Ruby::Call
+#  - identifier
+#  - param
+#  - block_param
+# 
+# * Ruby::Method
+#  - identifier
+#  - param
+# 
+# delete argument
+# ---
+# node.find(:arg => :src).delete!
+# 
+# Extra functionality
+# ---
+# - add/remove include ModuleName
+# - add/remove extend ModuleName

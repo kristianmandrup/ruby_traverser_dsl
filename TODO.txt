@@ -1,12 +1,36 @@
-find
-find :after
-find :before
+TODO
+----        
+call_node.update(:select => {:arg => :src}, :with_code => "{:src => 'unknown'}")      
 
-insert :after, ...
-insert :before, ...
+update changes to:
+--
+n.find(:arg => :src).update!(:arg => :unknown)
 
-update :select => {...}, :with => {...}
-update :select => {...}, :with_code => 'code'
+n.find(:arg => :src).update! do
+  "{:src => 'unknown'}"
+end
 
-delete
-delete :select => {...}
+update should work on:
+* Ruby::Module, identifier
+* Ruby::Class, identifier 
+* Ruby::Variable
+ - identifier
+ - value
+
+* Ruby::Call
+ - identifier
+ - param
+ - block_param
+
+* Ruby::Method
+ - identifier
+ - param
+
+delete argument
+---
+node.find(:arg => :src).delete!
+
+Extra functionality
+---
+- add/remove include ModuleName
+- add/remove extend ModuleName
