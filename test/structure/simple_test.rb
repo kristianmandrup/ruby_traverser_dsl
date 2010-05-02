@@ -26,7 +26,6 @@ class TraversalTest < Test::Unit::TestCase
     }
     code = Ripper::RubyBuilder.build(src) 
     node = code[0]   
-    puts node.to_yaml               
     assert_equal 'abc', node.str_val
     assert_equal :abc, node.value
   end 
@@ -107,6 +106,16 @@ class TraversalTest < Test::Unit::TestCase
     node = code[0]                  
     assert_equal 'abc', node.value
     assert_equal /abc/, node.to_regexp
+  end 
+
+  define_method :"test find Array value" do                           
+    src = %q{    
+      ['a', 'b'] 
+    }
+    code = Ripper::RubyBuilder.build(src) 
+    node = code[0]                     
+    assert_equal Array, node.value.class
+    assert_equal ['a', 'b'], node.value
   end 
   
   

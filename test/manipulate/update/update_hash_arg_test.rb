@@ -4,24 +4,36 @@ require 'yaml'
 class TraversalTest < Test::Unit::TestCase
   include TestHelper
 
-    define_method :"test replace matching hash with new hash" do                           
-      src = %q{                 
-  group :test do
-    gem 'kris', 2, :src => 'goody', 
+  define_method :"test replace matching hash with new hash using code" do                           
+    src = %q{                 
+      gem :src => 'goody'      
+    }
+
+    code = Ripper::RubyBuilder.build(src)                 
+    call_node = code[0].update(:src => 'goody'}.with_code("{:src => 'unknown'}")
+    assert_equal 'unknown', call_node[0].first.value
   end  
-      }
 
-      code = Ripper::RubyBuilder.build(src)                 
-      code.inside(:block, 'group', :args => [:test]) do |b|
-        call_node = b.find(:call, 'gem', :args => ['kris'])
-        assert_equal Ruby::Call, call_node.class
+  define_method :"test replace matching hash with new hash" do                           
+    src = %q{                 
+      gem :src => 'goody'      
+    }
 
-        call_node.update(:select => {:arg => {:src => 'goody'}} , :with_code => "{:src => 'unknown'}")
-        call_node.replace(:arg => '#1' , :with_code => "{:src => 'known'}")
+    code = Ripper::RubyBuilder.build(src)                 
+    # translate hash assoc to code, then use with_code internally!
+    call_node = code[0].update(:src => 'goody'}.with(:src => 'unknown')
+    assert_equal 'unknown', call_node[0].first.value
+  end  
 
-        puts b.to_ruby
-      end       
-    end  
+  define_method :"test replace matching hash with new comlex hash using code" do                           
+    src = %q{                 
+      gem :src => {:blap => 'goody'}      
+    }
+
+    code = Ripper::RubyBuilder.build(src)                 
+    call_node = code[0].update(:src => {:blap => 'goody'} }.with_code(":src => {:blip => 'unknown'}")
+    assert_equal 'unknown', call_node[0].first.value[0].first.value
+  end  
 
 
 end

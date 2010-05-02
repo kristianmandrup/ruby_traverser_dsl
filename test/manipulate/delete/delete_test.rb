@@ -7,6 +7,20 @@ class TraversalTest < Test::Unit::TestCase
   define_method :"test delete(:first) deletes first statement" do                           
   end
 
+  define_method :"test delete more..." do                               
+    # delete argument
+    node.find(:arg, :src).delete!
+
+    # keyword
+    node.find(:include, ModuleName).delete 
+    node.insert(:include, ModuleName).delete 
+
+    # keyword
+    node.find(:require, 'mocha').delete! 
+    node.insert(:require, 'mocha')    
+  end
+
+
   define_method :"test find assignment in method definition and replace value of right side" do                           
     src = %q{    
       def hello_world(a)
