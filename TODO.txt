@@ -10,10 +10,75 @@ n.find(:arg => :src).update! do
   "{:src => 'unknown'}"
 end
 
+update changes to:
+--
+Class
+# class Hello::Abc
+n.find(:id, Hello::Abc).update!(Hello::Xyz)
+# class Hello::Xyz
+
+# class MyMod::Abc < Blip::Blap
+n.find(:superclass, Blip::Blap).update!(Klip::Klop)
+# class MyMod::Abc < Klip::Klop
+
+Module
+# module MyMod::Abc
+n.find(:id, MyMod::Abc).update!(MyMod::Xyz)
+# class MyMod::Xyz
+
+Assignment
+# b = 7
+n.find(:id, 'b').update!('x')
+# x = 7
+
+# b = 7
+n.find(:value, 7).update!(32)
+# x = 32
+
+# chaining
+# b = 7
+n.find(:value, 7).update!(32).find(:id, 'b').update!('c')
+# c = 32
+
+Method
+# def abc(a, b) ... end
+n.find(:id, 'abc').update!('xyz')
+# def xyz(a, b)
+
+# def abc(a, b) ... end
+n.find(:param, 'a').update!('file')
+# def abc(file, b)
+
+Call
+# gem :src, 2
+n.find(:arg, :value => :src).update!(:value => :unknown)
+# gem :unknown, 2
+
+# gem :src, 2
+n.find(:arg, :pos => 1).update!(:value => 3)
+n.find(:arg, :pos => 1).update!(3)
+# gem :src, 3
+
+# gem :src => :blip, 2
+n.find(:arg, :key => :src).update!(:value => :blap).delete!(:arg, 1)
+n.find(:arg, :key => :src).update!(:value => ':blap').delete!(:arg, 1)
+# gem :src => :blap
+
+# gem :src => :blip, 2
+n.find(:arg, :key => :src).update!(:key => :source).delete!(:arg, 1)
+# gem :source => :blap
+
+# gem :src => 1..5, 3
+n.find(:arg, :key => :src, :value => 1..5).update!(:value) do
+  "1..10"
+end
+
+# gem :src => 1..10, 3
+
 update should work on:
 * Ruby::Module, identifier
 * Ruby::Class, identifier 
-* Ruby::Variable
+* Ruby::Assignment
  - identifier
  - value
 
@@ -28,9 +93,35 @@ update should work on:
 
 delete argument
 ---
-node.find(:arg => :src).delete!
+node.find(:arg, :src).delete!
+
+# keyword
+node.find(:include, ModuleName).delete 
+node.insert(:include, ModuleName).delete 
+
+# keyword
+node.find(:require, 'mocha').delete! 
+
+node.insert(:require, 'mocha') 
 
 Extra functionality
 ---
 - add/remove include ModuleName
 - add/remove extend ModuleName
+
+Not yet taken into account
+
+Ruby::Range
+Ruby::Char
+Ruby::Label
+Ruby::True
+Ruby::False
+Ruby::Nil
+Ruby::While
+Ruby::Until
+Ruby::Keyword
+Ruby::Const
+Ruby::Regexp
+Ruby::HeredocBegin
+Ruby::HeredocEnd
+Ruby::RescueParams

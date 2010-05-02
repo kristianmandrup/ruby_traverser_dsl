@@ -53,7 +53,7 @@ Note:
 Update needs some polishing and is still a little buggy!
                                                               
 TODO:
-update identifier of module, class, method call and method definition. 
+[New Update and Delete API](http://gist.github.com/386674 "New Update and Delete API")
 
 ### Delete ##
 * delete
