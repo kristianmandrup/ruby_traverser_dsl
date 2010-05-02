@@ -19,6 +19,18 @@ class TraversalTest < Test::Unit::TestCase
     assert_equal 'TraversalTest', node.str_val
     assert_equal TraversalTest, node.value
   end 
+
+  define_method :"test find Symbol value" do                           
+    src = %q{    
+      :abc 
+    }
+    code = Ripper::RubyBuilder.build(src) 
+    node = code[0]   
+    puts node.to_yaml               
+    assert_equal 'abc', node.str_val
+    assert_equal :abc, node.value
+  end 
+
   
   define_method :"test find String value" do                           
     src = %q{    

@@ -1,10 +1,12 @@
 module Ruby
   class Arg
-    def name
-    end
+
+    def hash_assoc(index = 0)
+      arg.class == Ruby::Hash ? arg[index] : nil
+    end             
     
     def <=> (arg)
-      arg.elements[0] <=> arg.elements[0]
+      arg[0] <=> arg[0]
     end
   end
 end

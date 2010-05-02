@@ -90,7 +90,6 @@ module Ruby
   end
 
   class Const
-    include Ruby::IdValue
 
     def value      
       Kernel.const_get(str_val)
@@ -100,6 +99,18 @@ module Ruby
       identifier.value
     end    
   end
+
+  class Symbol
+
+    def value      
+      str_val.to_sym
+    end  
+    
+    def str_val
+      identifier.value
+    end    
+  end
+
 
   class Regexp
     include Ruby::StrValue

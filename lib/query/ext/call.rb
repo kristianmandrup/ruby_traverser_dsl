@@ -1,6 +1,16 @@
 module Ruby
   class Call
     include Enumerable    
+    include Ruby::IdValue
+
+    def name
+      identifier.token
+    end
+
+    def value
+      to_ruby
+    end
+
     
     def each
       arguments.each{|a| yield a}

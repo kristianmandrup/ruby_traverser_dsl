@@ -13,6 +13,29 @@ gem 'ripper', 7, TraversalTest, :blip
     @node = code[0]    
   end
 
+  define_method :"test call name" do                           
+    puts @node.to_yaml
+    assert_equal 'gem', @node.name    
+  end
+
+
+  define_method :"test call with argument value" do                           
+    src = %q{                 
+abc(pde(2), 7)
+
+def pde(num)
+  32
+end
+    }
+
+    code = Ripper::RubyBuilder.build(src)  
+    @node = code[0]    
+    puts @node.to_yaml
+    assert_equal 'pde(2)', @node.first.value    
+  end
+
+
+
   define_method :"test args_list not empty" do                           
     assert_equal false, @node.empty?    
   end
