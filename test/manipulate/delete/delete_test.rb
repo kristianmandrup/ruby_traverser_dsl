@@ -4,6 +4,8 @@ require 'yaml'
 class TraversalTest < Test::Unit::TestCase
   include TestHelper
 
+  define_method :"test delete(:first) deletes first statement" do                           
+  end
 
   define_method :"test find assignment in method definition and replace value of right side" do                           
     src = %q{    

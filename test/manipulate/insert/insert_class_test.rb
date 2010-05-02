@@ -1,13 +1,26 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../../test_helper'
 require 'yaml'
 
 class TraversalTest < Test::Unit::TestCase
   include TestHelper
 
+  define_method :"test select Class that inherits from other Class and insert new method def" do                           
+    src = %q{      
+      class Monty < Abc::Blip 
+      end 
+    }
+    code = Ripper::RubyBuilder.build(src)              
+    code.find(:class, 'Monty', :superclass => 'Abc::Blip') do |b|
+      assert_equal Ruby::Class, b.class                                  
+      b.insert(:after, "gem 'abc'")   
+      puts b.to_ruby      
+    end
+  end 
+
   define_method :"test select Class that inherits from other Class and insert gem statements and a new method def" do                           
     src = %q{  class Monty < Abc::Blip 
   end}
-    
+
     def_src = %q{
 def my_fun
 end}
@@ -21,9 +34,9 @@ end}
       gem_123 = gem_abc.insert(:after,"gem '123'")      
       gem_123.insert_comment(:after, "hello")      
       my_def = b.insert(:after, def_src)      
-      
+
       b.insert(:before, "gem '789'")
       puts b.to_ruby
     end
   end
-end   
+end

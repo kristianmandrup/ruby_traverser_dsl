@@ -22,9 +22,11 @@ module Ruby
           conditions = args.last.is_a?(::Hash) ? args.pop : {}
           conditions[:is_a] = args unless args.empty?
 
-          type_condition = conditions[:is_a][0]
-          if type_condition
-            return nil if !has_type?(type_condition)
+          if conditions[:is_a]
+            type_condition = conditions[:is_a][0]
+            if type_condition
+              return nil if !has_type?(type_condition)
+            end
           end
 
           res = conditions.inject(!conditions.empty?) do |result, (type, value)|

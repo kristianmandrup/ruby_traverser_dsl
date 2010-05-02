@@ -11,6 +11,34 @@ class TraversalTest < Test::Unit::TestCase
     n.find(:id, Hello::Abc).update!(Hello::Xyz)
     # class Hello::Xyz
 
+    # helo 1,2, :k => 'blap'    
+    node.update(:arg, :_2).with('blip')
+    # helo 1,2, 'blip'
+    
+    node.update(:key, :_2).with(:x)
+    # helo 1,2, :x => 'blap'    
+    node.update(:value, :_2).with('blip')
+    # helo 1,2, :k => 'blip'    
+    
+    node.update(:arg, '#2').with('blip')
+    node.update(:key, :k).with('blip')    
+    node.update(:arg, :k).with_code(":k => 'hello'")    
+
+    node.update(:key, :k).with(old_node.get(:key, :k))
+
+    node.update(:key, :k).with do
+      'blip'
+    end
+
+    node.perform do
+      find(:arg, :_2).update(:key, :k).with('blip')
+      update(:arg, 'hello').with('hi there!')
+    end
+
+
+    # update works same as find
+    # update! works same as with
+
     # class MyMod::Abc < Blip::Blap
     n.find(:superclass, Blip::Blap).update!(Klip::Klop)
     # class MyMod::Abc < Klip::Klop
