@@ -4,6 +4,17 @@ require 'yaml'
 class TraversalTest < Test::Unit::TestCase
   include TestHelper
 
+  define_method :"setup" do                           
+    src = %q{    
+      a = 3
+      b = c
+      x = 'abc'
+    }            
+    code = Ripper::RubyBuilder.build(src)                   
+    @node = code[0]
+  end
+
+
   define_method :"test find assignment in method definition and replace value of right side String value '3'" do                           
     src = %q{    
       def hello_world(a)

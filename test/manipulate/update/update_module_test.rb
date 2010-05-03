@@ -4,15 +4,19 @@ require 'yaml'
 class TraversalTest < Test::Unit::TestCase
   include TestHelper
 
-  define_method :"update module name" do                           
+  define_method :"setup" do                           
     src = %q{                 
       module Hello
         rap
       end
     }
+    @code = Ripper::RubyBuilder.build(src)                 
+    @node = code[0].update(:name).with('greeting')
+  end
 
-    code = Ripper::RubyBuilder.build(src)                 
-    node = code.find(:module, 'Hello') do
+
+  define_method :"update module name" do                           
+    @node.find(:module, 'Hello') do
       name = 'GoodBye'     
     end       
     assert_equal 'GoodBye', node.name      

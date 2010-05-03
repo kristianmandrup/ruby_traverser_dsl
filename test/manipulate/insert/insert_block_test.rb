@@ -4,22 +4,31 @@ require 'yaml'
 class TraversalTest < Test::Unit::TestCase
   include TestHelper
 
-  define_method :"test find gem statement inside group using DSL and then insert new gem statement" do                           
+  define_method :"setup" do                           
     src = %q{                 
-group :test do
-  gem 'ripper', :src => 'github' 
-  gem 'blip'
-end  
+      group 'ripper', :6 do |x, y|
+        rap
+      end
     }
-
-    code = Ripper::RubyBuilder.build(src)                 
-
-    code.find(:block, 'group', :args => [:test]) do |b|
-      call_node = b.find(:call, 'gem', :args => ['ripper', {:src => 'github'}])
-      assert_equal Ruby::Call, call_node.class
-      b.insert(:after, "gem 'abc'")
-      puts "mutated block:"
-      puts b.to_ruby
-    end       
+        
+    @code = Ripper::RubyBuilder.build(src)                   
+    @node = code[0]
   end
+
+  define_method :"update first statement within block" do                           
+    @node.find(:block, 'group').where('ripper') do
+      # update first statement within block!
+      first.append(:code => 'hello')     
+    end       
+    assert_equal 'hello', node[0].name      
+  end
+
+  define_method :"test update Integer argument with new Integer argument" do                           
+    @node.find(:call, 'sum').where(:param, 's') do
+      prepend(4)      
+    end       
+    assert_equal 4, node[0].value      
+  end
+  
+  
 end

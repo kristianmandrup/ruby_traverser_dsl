@@ -4,6 +4,18 @@ require 'yaml'
 class TraversalTest < Test::Unit::TestCase
   include TestHelper
 
+  define_method :"setup" do                           
+    src = %q{                 
+      sum 5, 7 
+      sum 
+      helo_world :me, 'you', 1..5, ['a', 'b']
+
+    }    
+    code = Ripper::RubyBuilder.build(src)                   
+    @node = code[0]
+  end
+
+
   define_method :"test update String argument with code Hash arg" do                           
     src = %q{                 
       gem 'ripper'
