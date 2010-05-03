@@ -1,0 +1,66 @@
+Query API
+---------
+
+code = parse(str)
+
+Find - Where
+------------
+Find is used to indicate what type of element to find, much like a FROM in SQL
+Where clauses are used to further filter all matches of the find 
+                                             
+# find the first class called 'Hello' which have a superclass called 'Hi'
+code.find_first(:class, 'Hello').where(:superclass, 'Hi')
+
+# find all classes called 'Hello' which have a superclass called 'Hi', and then return the last
+code.find(:class, 'Hello').where(:superclass, 'Hi').last
+
+# find all method calls to hello which have an argument 'a' as one of its params (default :any)
+code.find(:call, 'hello').where(:arg => 'a')
+
+# find all method calls to hello which have only one argument 'a'
+code.find(:call, 'hello').where(:only, :arg => 'a')
+
+# find all method calls to hello which have only the arguments 'a' AND 'b', but in any order
+code.find(:call, 'hello').where(:only, :args => ['a', 'b])
+
+# find all method calls to hello which have only the arguments 'a' AND 'b' in exactly the order given
+code.find(:call, 'hello').where(:exactly, :args => ['a', 'b])
+
+# find all method calls to hello which have only an argument 'a' and any of the block_params x or y
+code.find(:block, 'hello_you').where(:only, :arg => 'a').and(:any, :param => ['x', 'y'])
+
+# find all method calls to hello which have only an argument 'a' and NOT any of the block_params x or y
+code.find(:block, 'hello_you').where(:only, :arg => 'a').and(:not, :any, :param => ['x', 'y'])
+
+Notice the confitional logic
+:only, :exactly - AND
+:any - OR
+:not - NOT
+
+There should be a Program container act as a Enumeration of Ruby::Program, and have a select method
+This allows you to find the code file(s) matching a given condition 
+
+# load all programs using a FileList (rake)
+programs.load(FileList['test/**/*.rb'])
+
+# find program with only one Module called Hello
+programs.find(:only, :module => 'Hello')
+
+# find program which does NOT only have one Module called Hello
+programs.find(:not, :only, :module => 'Hello')
+
+# find program with any Module called Hello
+programs.find(:any, :module => 'Hello')
+
+# find program without any Module called Hello
+programs.find(:not, :any, :module => 'Hello')
+
+
+Ruby::Program 
+-------------
+# enumerable that operates on statements
+code.statements
+code[0] # statement #0
+code.each
+
+
