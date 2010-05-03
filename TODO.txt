@@ -1,127 +1,79 @@
-TODO
-----        
-call_node.update(:select => {:arg => :src}, :with_code => "{:src => 'unknown'}")      
+Every manipulation function should have two variants, ! and normal:
 
-update changes to:
---
-n.find(:arg => :src).update!(:arg => :unknown)
 
-n.find(:arg => :src).update! do
-  "{:src => 'unknown'}"
+Insert tests
+------------
+:before
+:after
+:pos
+
+
+call_node.args.insert(:first).with(:a)
+call_node.params.insert(:last).with(:a)
+call_node.params.insert_at(2).with(:a)
+
+call_node.insert(:arg, :pos => :first).with(:a)
+call_node.insert(:param, :pos => :first).with(:a)
+
+call_node.params.insert(:after, :x).with(:a)
+call_node.args.insert(:before, :x).with(:a)
+call_node.args.insert(:pos => 2).with(:a)
+
+call_node.params.before(:first).insert(:a)
+call_node.params.after(:first).insert(:a)
+
+call_node.params.after(:last).insert(:a)
+call_node.params.before(:last).insert(:a)
+call_node.params.after(:x).insert(:a)
+call_node.args.before(:x).insert(:a)
+call_node.args.after(:pos => 2).insert(:a)
+
+call_node.after(:param, :last).insert(:a)
+call_node.before(:param, :last).insert(:a)
+call_node.before(:arg => :x).insert(:a)
+call_node.after(:pos => 2).insert(:a)
+
+Delete
+------
+Go through again
+
+# res is a copy of node where child is removed
+res = node.find(child select).delete 
+
+# res is a copy of node where child is removed
+res = node.delete(child select) 
+
+# res is node where child is removed (no copy)
+res = node.delete!(child select)
+
+# res is true if delete was successful
+res = node.delete!
+
+# delete list of nodes
+res = node.from(:pos => 2).to(:after, :x).delete!
+res = node.from(:pos => 2).delete!
+
+res = node.args.select(:pos => 2).select(:pos => 5) do |list|
+  list[0].delete!
+  list[1].update(:value, 32)
 end
 
-update changes to:
---
-Class
-# class Hello::Abc
-n.find(:id, Hello::Abc).update!(Hello::Xyz)
-# class Hello::Xyz
+Update
+------
+Go through again
 
-# class MyMod::Abc < Blip::Blap
-n.find(:superclass, Blip::Blap).update!(Klip::Klop)
-# class MyMod::Abc < Klip::Klop
+# res is a copy of node where child is updated
+res = node.find(child select).update(value) 
 
-Module
-# module MyMod::Abc
-n.find(:id, MyMod::Abc).update!(MyMod::Xyz)
-# class MyMod::Xyz
+res = node.before(:arg, :x).update.with('y') 
+res = node.before(:arg, :x).update_with(:code => 'call_me(5)') 
+res = node.before(:arg, :x).update_with(my_other_node) 
+res = node.args.before(:x).update(:y).with(['y', 2]) 
 
-Assignment
-# b = 7
-n.find(:id, 'b').update!('x')
-# x = 7
+# res is a copy of node where child is update
+res = node.update(child select).with(value) 
 
-# b = 7
-n.find(:value, 7).update!(32)
-# x = 32
+# res is node where child is removed (no copy)
+res = node.update!(child select)
 
-# chaining
-# b = 7
-n.find(:value, 7).update!(32).find(:id, 'b').update!('c')
-# c = 32
 
-Method
-# def abc(a, b) ... end
-n.find(:id, 'abc').update!('xyz')
-# def xyz(a, b)
-
-# def abc(a, b) ... end
-n.find(:param, 'a').update!('file')
-# def abc(file, b)
-
-Call
-# gem :src, 2
-n.find(:arg, :value => :src).update!(:value => :unknown)
-# gem :unknown, 2
-
-# gem :src, 2
-n.find(:arg, :pos => 1).update!(:value => 3)
-n.find(:arg, :pos => 1).update!(3)
-# gem :src, 3
-
-# gem :src => :blip, 2
-n.find(:arg, :key => :src).update!(:value => :blap).delete!(:arg, 1)
-n.find(:arg, :key => :src).update!(:value => ':blap').delete!(:arg, 1)
-# gem :src => :blap
-
-# gem :src => :blip, 2
-n.find(:arg, :key => :src).update!(:key => :source).delete!(:arg, 1)
-# gem :source => :blap
-
-# gem :src => 1..5, 3
-n.find(:arg, :key => :src, :value => 1..5).update!(:value) do
-  "1..10"
-end
-
-# gem :src => 1..10, 3
-
-update should work on:
-* Ruby::Module, identifier
-* Ruby::Class, identifier 
-* Ruby::Assignment
- - identifier
- - value
-
-* Ruby::Call
- - identifier
- - param
- - block_param
-
-* Ruby::Method
- - identifier
- - param
-
-delete argument
----
-node.find(:arg, :src).delete!
-
-# keyword
-node.find(:include, ModuleName).delete 
-node.insert(:include, ModuleName).delete 
-
-# keyword
-node.find(:require, 'mocha').delete! 
-
-node.insert(:require, 'mocha') 
-
-Extra functionality
----
-- add/remove include ModuleName
-- add/remove extend ModuleName
-
-Not yet taken into account
-
-Ruby::Range
-Ruby::Char
-Ruby::Label
-Ruby::True
-Ruby::False
-Ruby::Nil
-Ruby::While
-Ruby::Until
-Ruby::Keyword
-Ruby::Const
-Ruby::Regexp
-Ruby::HeredocBegin
-Ruby::HeredocEnd
-Ruby::RescueParams

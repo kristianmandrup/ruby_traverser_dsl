@@ -6,7 +6,7 @@ class TraversalTest < Test::Unit::TestCase
 
   define_method :"setup" do                           
     src = %q{    
-      def my_block(:a, 'b', 2)
+      my_block :a, 'b', 2 do |d, e, f|        
         a = 3
       end
     }    
@@ -15,13 +15,13 @@ class TraversalTest < Test::Unit::TestCase
     assert_equal 'd', @node.params[0]    
     @node.params.first.delete
     assert_equal 2, @node.params.size    
-    assert_equal 'e', @node.params[0]    
+    assert_equal 'e', @node[0]    
   end
 
   define_method :"test deletes last param" do
     assert_equal 'f', @node.params.last.value    
     @node.params.last.delete
-    assert_equal 'e', @node.params.last.value    
+    assert_equal 'e', @node.last.value    
   end
 
   define_method :"test deletes all params" do
@@ -34,5 +34,5 @@ class TraversalTest < Test::Unit::TestCase
     assert_equal 3, @node.params.size    
     @node.params.delete_all!
     assert @node.params.empty?    
-  end
+  end  
 end

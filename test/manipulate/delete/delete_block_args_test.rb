@@ -6,7 +6,9 @@ class TraversalTest < Test::Unit::TestCase
 
   define_method :"setup" do                           
     src = %q{    
-      my_call :a, 'b', 2
+      my_block :a, 'b', 2 do |d, e, f|        
+        a = 3
+      end
     }    
         
     code = Ripper::RubyBuilder.build(src)                   

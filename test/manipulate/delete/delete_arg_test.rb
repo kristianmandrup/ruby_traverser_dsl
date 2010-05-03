@@ -40,12 +40,33 @@ class TraversalTest < Test::Unit::TestCase
     assert_equal 2, @node[1]    
   end
 
+  define_method :"test delete range of arguments" do
+    assert_equal :b, @node[1]    
+    @node[0..1].delete
+    assert_equal 1, @node.size    
+    assert_equal 2, @node[0]    
+  end
+
+  define_method :"test delete all arguments" do
+    assert_equal :b, @node[1]    
+    @node.delete_all
+    assert @node.empty?
+  end
+
   define_method :"test delete argument :b" do      
     assert_equal :b, @node[1]    
     @node.delete(:b)
     assert_equal 2, @node.size    
     assert_equal 2, @node[1]    
   end
+
+  define_method :"test delete arguments :b and 'a' " do      
+    assert_equal :b, @node[1]    
+    @node.delete(:b, 'a')
+    assert_equal 1, @node.size    
+    assert_equal 2, @node[0]    
+  end
+
 
   define_method :"test delete argument 'a'" do      
     assert_equal :b, @node[1]    
