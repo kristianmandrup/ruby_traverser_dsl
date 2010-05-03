@@ -56,6 +56,21 @@ programs.find(:any, :module => 'Hello')
 programs.find(:not, :any, :module => 'Hello')
 
 
+Combination API
+---------------
+
+node.find(:method => 'blip').where(:only, :args => ['a', 'b']) do |node|
+  node.with(:args) do |args|
+    args.update(:a).with(:x) # returns updated args for futher chaining
+    args.update(:x).with(:y).delete!(:b) # here chaining is used
+    args.after(:y).append(:last_arg)
+    args.at[2].append(:first_arg)
+    args.where(:last_arg).prepend(:before_last_arg)
+    args.prepend(:first_arg)
+  end
+end    
+  
+
 Ruby::Program 
 -------------
 # enumerable that operates on statements
