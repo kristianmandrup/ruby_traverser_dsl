@@ -63,4 +63,86 @@ code.statements
 code[0] # statement #0
 code.each
 
+Ruby::Module
+------------
+# convenience finders, all returns Enumerations
+.classes
+.modules
+.includes
+.methods(:all)
+.methods(:self)
+.methods(:instance) # default
+
+Enumeration on statements
+
+.name
+.name(:namespaces) - list of namespaces from name
+
+
+Ruby::Class
+-----------
+Inherits from Ruby::Module
+
+superclass.name
+superclass.name(:namespaces)
+
+Find Class:
+code.find(:any, class => 'Hello').where(:superclass, 'Hi').last
+
+# find all modules in any program where the modules has inside it any class with the name 'Hello' and superclass 'Hi'
+programs.find(:module).where(:any, :class => 'Hello').where(:superclass, 'Hi').last
+
+# find class Hello with conditions
+programs.find(:class => 'Hello').where(:any, :method => 'hello')
+
+Find inside Class:
+* All statements are valid
+
+Ruby::Method
+------------
+name
+params # default for enumeration
+
+Self:
+:param
+:name
+
+Statements:
+NOT
+:class
+:module 
+:method
+
+Ruby::Call
+------------
+name                          
+args # default for enumeration
+
+Self:
+:arg
+:name
+
+Ruby::Block
+------------                  
+Inherits from Ruby::Call
+params
+
+Self:
+:arg
+name
+
+Statements:
+NOT
+:class
+:module 
+:method
+
+Ruby::ArgsList
+------------                  
+
+Ruby::Arg
+------------                  
+hash_assoc(index)
+
+
 
