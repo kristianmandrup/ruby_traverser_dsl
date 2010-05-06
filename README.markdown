@@ -76,7 +76,29 @@ The new API uses actions:
 * InsertAction
 * CreateAction
 
+Actions are executed on either
+* Node
+* NodeSet (composite of Node - Enumerates notes)
 
+Node operations:
+----------------
+node.find(select).where(filter)
+node.find(select).where(filter).limit(number) # limit: first, all 
+
+node.update_with(node to update with)
+node.append(node to append)
+node.prepend(node to prepend)
+node.delete
+
+NodeSet operations:
+----------------
+nodeset.find(select).where(filter)
+nodeset.find(select).where(filter).limit(number) # limit: first, all 
+
+nodeset.update_with(node to update with)
+nodeset.append(node to append)
+nodeset.prepend(node to prepend)
+nodeset.delete
 
 ## Copyright ##
 
