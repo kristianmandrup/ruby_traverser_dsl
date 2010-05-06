@@ -32,6 +32,21 @@ code.find(:block, 'hello_you').where(:only, :arg => 'a').and(:any, :param => ['x
 # find all method calls to hello which have only an argument 'a' and NOT any of the block_params x or y
 code.find(:block, 'hello_you').where(:only, :arg => 'a').and(:not, :any, :param => ['x', 'y'])
 
+# find all method calls to hello which have only an argument 'a' and NOT any of the block_params x or y
+
+code.find(:block, 'hello_you').where(:only, :arg => 'a') do
+  where(:not, :any, :param => ['x', 'y'])
+end
+
+Find and Where each return SearchResult. Where further filters result of Find operation
+Find also determines the target kind of object to return!
+
+# filters in block
+code.find(:block, 'hello_you') do
+  where(:not, :any, :param => ['x', 'y'])
+  where(:only, :arg => 'a')
+end
+
 Notice the confitional logic
 :only, :exactly - AND
 :any - OR
