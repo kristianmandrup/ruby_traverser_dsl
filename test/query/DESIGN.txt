@@ -3,6 +3,22 @@ Query API
 
 code = parse(str)
 
+Actions:
+* Find: SearchAction  
+* Where: FilterAction
+
+Find: 
+creates a SearchAction 
+Defines what to be found within the current context. 
+The list of found objects become the new context               
+- returns SearchResult
+Result of the SearchAction is the Ruby Code object found
+
+Where:
+creates a FilterAction
+operates on a SearchResult and filters it to return a new SearchResult
+
+
 Find - Where
 ------------
 Find is used to indicate what type of element to find, much like a FROM in SQL

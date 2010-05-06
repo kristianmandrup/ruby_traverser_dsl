@@ -52,9 +52,6 @@ Argument find for update
 Note:
 Update needs some polishing and is still a little buggy!
                                                               
-TODO:
-[New Update and Delete API](http://gist.github.com/386674 "New Update and Delete API")
-
 ### Delete ##
 * delete
 
@@ -66,7 +63,20 @@ TODO:
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+* Send me a pull request. Bonus points for topic branches. 
+
+# Next version of API
+
+Since this API was designed I have completely redesigned a new API and ideas for the code required for it to work.
+The new API uses actions: 
+* SearchAction - returns SearchResult 
+* FilterAction
+* UpdateAction (composite of Delete and Insert actions)
+* DeleteAction
+* InsertAction
+* CreateAction
+
+
 
 ## Copyright ##
 
