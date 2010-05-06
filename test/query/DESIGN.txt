@@ -59,16 +59,46 @@ programs.find(:not, :any, :module => 'Hello')
 Combination API
 ---------------
 
-node.find(:method => 'blip').where(:only, :args => ['a', 'b']) do |node|
-  node.with(:args) do |args|
+# find method named blip which has only the arguments 'a' and 'b' (in any order!)
+# then with this method in hand change the name
+# and then operate on the arguments in a block
+# first change the argument 'a' to 'x'
+# then change the argument 'x' to 'y' and delete the argument 'b' (now 'y' and 'b')
+# then right after 'b' insert new argument using the code 'last_arg = []', argument with a default value of an empty array
+# for the third argument ('last_arg') append with new argument 'real_last = {}'
+# for the arg 'real_last' prepend with arg 'before_last_arg', but this is an exploded array arg as denoted by the :star     
+# lastly prepend the args list with the arg 'first_arg'
+
+def blip(a, b)
+=> 
+def blap(first_arg, y, b, last_arg = [], *before_last_arg, real_last = {})
+
+node.find(:method => 'blip').where(:only, :args => ['a', 'b']) do |method|
+  method.name = 'blap'
+  method.with(:args) do |args|
     args.update(:a).with(:x) # returns updated args for futher chaining
     args.update(:x).with(:y).delete!(:b) # here chaining is used
-    args.after(:y).append(:last_arg)
-    args.at[2].append(:first_arg)
-    args.where(:last_arg).prepend(:before_last_arg)
+    args.after(:b).append(:code => 'last_arg = []')
+    args.at[2].append(:code => 'real_last = {}')
+    args.where(:real_last).prepend(:star => :before_last_arg)
     args.prepend(:first_arg)
   end
 end    
+
+node.find(:method => 'blip').where(:only, :args => ['a', 'b']) do |method|
+  method.name = 'blap'
+  method.with(:args) do |args|
+    args[:a] = :x # returns updated args for futher chaining
+    args[:x] = :y
+    args - :b
+    args.insert(:after, :b).code('last_arg = []')
+    args[2].append(:code => 'real_last = {}')
+    args[:real_last].prepend(:star => :before_last_arg)
+    args.prepend(:first_arg)
+  end
+end    
+
+
   
 
 Ruby::Program 
